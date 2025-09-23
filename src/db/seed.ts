@@ -1,11 +1,5 @@
-import { auth } from "@/lib/auth";
 import "dotenv/config";
-
-async function main() {
-  await seedAdmin();
-}
-
-main();
+import { auth } from "@/lib/auth";
 
 const seedAdmin = async () => {
   try {
@@ -26,3 +20,10 @@ const seedAdmin = async () => {
     process.exit(1);
   }
 };
+
+
+async function main() {
+  await seedAdmin();
+}
+
+main();
