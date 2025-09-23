@@ -1,7 +1,189 @@
-import React from "react";
+"use client";
 
-const page = () => {
-  return <div>page</div>;
+import React from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { branches } from "@/lib/branches";
+import { MapPin, Clock, Phone, Star } from "lucide-react";
+
+const BranchesPage = () => {
+  return (
+    <>
+      <main className="relative w-full bg-black min-h-screen">
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-900/10 to-black/50" />
+
+        <div className="absolute inset-0 opacity-[0.02]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[length:40px_40px]" />
+        </div>
+
+        <div className="container mx-auto px-4 py-16 relative z-10">
+          <div className="text-center space-y-6 mb-16">
+            <h1 className="text-4xl lg:text-6xl font-bold text-white">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-red-400 to-yellow-400">
+                Our Locations
+              </span>
+            </h1>
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
+              Find your nearest Hotspot 24 location and enjoy authentic Nigerian
+              cuisine delivered fresh to your doorstep, available 24/7.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {branches.map((branch) => (
+              <Card
+                key={branch.id}
+                className="glass-border bg-gray-800/20 border-gray-700 hover:border-orange-500/30 transition-all duration-300 group"
+              >
+                <CardContent className="p-8 space-y-6">
+                  <div className="space-y-4">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h2 className="text-2xl font-bold text-white mb-2">
+                          {branch.name}
+                        </h2>
+                        <div className="flex items-center gap-2 text-gray-300">
+                          <MapPin className="h-4 w-4 text-orange-400" />
+                          <p className="text-sm">{branch.address}</p>
+                        </div>
+                      </div>
+                      <div className="bg-orange-600 p-2 rounded-full">
+                        <Star className="h-5 w-5 text-white fill-current" />
+                      </div>
+                    </div>
+
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="flex items-center gap-3 p-3 glass-border-subtle rounded-lg">
+                        <Clock className="h-5 w-5 text-green-400" />
+                        <div>
+                          <p className="text-white font-medium text-sm">
+                            24/7 Open
+                          </p>
+                          <p className="text-gray-400 text-xs">
+                            {branch.operatingHours.days}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 p-3 glass-border-subtle rounded-lg">
+                        <Phone className="h-5 w-5 text-blue-400" />
+                        <div>
+                          <p className="text-white font-medium text-sm">
+                            WhatsApp
+                          </p>
+                          <p className="text-gray-400 text-xs">
+                            {branch.whatsappNumber}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <h3 className="text-white font-semibold">
+                        Delivery Coverage
+                      </h3>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-300 text-sm">
+                          {branch.deliveryRadius}
+                        </span>
+                        <span className="text-orange-400 font-medium">
+                          ₦{(branch.deliveryFee / 100).toFixed(2)} delivery
+                        </span>
+                      </div>
+                    </div>
+
+                    {branch.specialOffers &&
+                      branch.specialOffers.length > 0 && (
+                        <div className="bg-orange-600/10 border border-orange-600/30 rounded-lg p-3">
+                          <h4 className="text-orange-400 font-semibold text-sm mb-1">
+                            Current Offer
+                          </h4>
+                          <p className="text-gray-300 text-sm">
+                            {branch.specialOffers[0].description}
+                          </p>
+                        </div>
+                      )}
+
+                    <div className="space-y-2">
+                      <h4 className="text-white font-medium text-sm">
+                        Recent Reviews
+                      </h4>
+                      <div className="flex items-center gap-2">
+                        <div className="flex">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className="h-4 w-4 text-yellow-400 fill-current"
+                            />
+                          ))}
+                        </div>
+                        <span className="text-white text-sm">4.9/5</span>
+                        <span className="text-gray-400 text-sm">
+                          ({branch.testimonials.length} reviews)
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3 pt-4 border-t border-gray-700">
+                    <Button
+                      asChild
+                      className="flex-1 bg-orange-600 hover:bg-orange-700 text-white rounded-xl"
+                    >
+                      <Link href={`/branches/${branch.slug}`}>
+                        View Branch Page
+                      </Link>
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      className="bg-transparent border-gray-600 hover:bg-gray-700/50 text-gray-100 rounded-xl"
+                      onClick={() => {
+                        const message = `Hello ${branch.name}! I'd like to place an order. Can you send me your menu?`;
+                        const whatsappUrl = `https://wa.me/${branch.whatsappNumber.replace(
+                          "+",
+                          ""
+                        )}?text=${encodeURIComponent(message)}`;
+                        window.open(whatsappUrl, "_blank");
+                      }}
+                    >
+                      <Phone className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="text-center mt-16 space-y-6">
+            <h2 className="text-2xl font-bold text-white">
+              Can&apos;t find your area?
+            </h2>
+            <p className="text-gray-400 max-w-md mx-auto">
+              We&apos;re expanding! Contact us to request delivery to your
+              location or to learn about upcoming branches.
+            </p>
+            <Button
+              size="lg"
+              variant="outline"
+              className="bg-transparent border-gray-600 hover:bg-gray-700/50 text-gray-100 px-8 rounded-xl"
+              onClick={() => {
+                const message =
+                  "Hello! I'd like to know if you deliver to my area or if there are plans for a new branch near me.";
+                const whatsappUrl = `https://wa.me/+2348012345678?text=${encodeURIComponent(
+                  message
+                )}`;
+                window.open(whatsappUrl, "_blank");
+              }}
+            >
+              Contact Us About Coverage
+            </Button>
+          </div>
+        </div>
+      </main>
+    </>
+  );
 };
 
-export default page;
+export default BranchesPage;

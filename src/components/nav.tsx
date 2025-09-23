@@ -18,26 +18,19 @@ const PublicNav = () => {
     <header className="sticky top-0 z-[99] p-4">
       <nav className="container mx-auto max-w-4xl liquid-glass-header shadow glass-border-enhanced flex items-center justify-between w-full px-5 md:px-20 py-2 rounded-full">
         <div className="flex gap-1">
-          <Button
-            aria-label="Home"
-            asChild
-            variant={"ghost"}
-            className="font-bold tracking-tigt flex gap-1"
-          >
-            <Link href={"/"}>
-              <ShoppingCart />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-pink-600">
-                Hotspot 24/7
-              </span>
-            </Link>
-          </Button>
+          <Link href={"/"} className="font-bold tracking-tigt flex items-center gap-1">
+            <ShoppingCart />
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-pink-600">
+              Hotspot 24/7
+            </span>
+          </Link>
           <Button
             aria-label="Branches"
             className="hidden md:inline-block"
             asChild
             variant={"link"}
           >
-            <Link href={"/#branches"}>Branches</Link>
+            <Link href={"/branches"}>Branches</Link>
           </Button>
           <Button
             aria-label="About Us"
@@ -93,7 +86,7 @@ const PublicNav = () => {
             </SheetHeader>
             <SheetDescription className="flex flex-col gap-2 px-10">
               <Button aria-label="Branches" asChild>
-                <Link href={"/#branches"}>Branches</Link>
+                <Link href={"/branches"}>Branches</Link>
               </Button>
               <Button
                 aria-label="About Us"
