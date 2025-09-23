@@ -6,6 +6,13 @@ import FoodBankIcon from "@mui/icons-material/FoodBank";
 import PepperIcon from "@mui/icons-material/LocalFireDepartment";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  motion,
+  AnimatePresence,
+  easeOut,
+  easeIn,
+  easeInOut,
+} from "framer-motion";
 
 export default function EnhancedHero() {
   const [activeFeature, setActiveFeature] = useState(0);
@@ -83,6 +90,99 @@ export default function EnhancedHero() {
     },
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.8,
+        staggerChildren: 0.2,
+        delayChildren: 0.3,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: {
+      opacity: 0,
+      y: 50,
+      scale: 0.95,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.6,
+        ease: easeOut,
+      },
+    },
+  };
+
+  const featureVariants = {
+    hidden: {
+      opacity: 0,
+      x: 100,
+      scale: 0.9,
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        ease: easeOut,
+      },
+    },
+    exit: {
+      opacity: 0,
+      x: -100,
+      scale: 0.9,
+      transition: {
+        duration: 0.3,
+        ease: easeIn,
+      },
+    },
+  };
+
+  const floatVariants = {
+    float: {
+      y: [-20, 20, -20],
+      rotate: [0, 2, -2, 0],
+      transition: {
+        duration: 6,
+        repeat: Infinity,
+        ease: easeInOut,
+      },
+    },
+  };
+
+  const floatSlowVariants = {
+    float: {
+      y: [-15, 15, -15],
+      rotate: [0, 1, -1, 0],
+      transition: {
+        duration: 7,
+        repeat: Infinity,
+        ease: easeInOut,
+        delay: 0.5,
+      },
+    },
+  };
+
+  const floatDelayVariants = {
+    float: {
+      y: [-10, 10, -10],
+      rotate: [0, -1, 1, 0],
+      transition: {
+        duration: 8,
+        repeat: Infinity,
+        ease: easeInOut,
+        delay: 1,
+      },
+    },
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveFeature((prev) => (prev + 1) % features.length);
@@ -90,41 +190,54 @@ export default function EnhancedHero() {
     return () => clearInterval(interval);
   }, [features.length]);
 
-  const floatingVariants = {
-    hidden: { opacity: 0, scale: 0.8, y: 20 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      y: 0,
-      transition: { duration: 0.8, delay: 1.2, ease: "easeOut" },
-    },
-  };
-
   return (
-    <div className="relative w-full min-h-[85vh] md:min-h-svh bg-black overflow-hidden flex flex-col justify-center">
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
-        <div
+    <motion.div
+      className="relative w-full min-h-[85vh] md:min-h-svh bg-black overflow-hidden flex flex-col justify-center"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
+      <motion.div
+        className="absolute top-0 left-0 w-full h-full overflow-hidden"
+        variants={itemVariants}
+      >
+        <motion.div
           className="absolute top-1/4 -left-1/4 w-1/2 h-1/2 bg-gradient-to-br from-orange-600/15 to-red-600/10 rounded-full blur-3xl"
-        ></div>
-        <div
+          variants={floatVariants}
+          animate="float"
+        ></motion.div>
+        <motion.div
           className="absolute bottom-1/4 -right-1/4 w-1/2 h-1/2 bg-gradient-to-bl from-yellow-500/12 to-orange-600/8 rounded-full blur-3xl"
-        ></div>
-        <div className="absolute inset-0 opacity-[0.02]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[length:40px_40px]"></div>
-        </div>
-      </div>
-
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0 bg-[url('/pattern-dots-dark.svg')] bg-repeat opacity-20"></div>
-      </div>
-
-      <div className="container mx-auto px-4 py-16 flex flex-col mt-[-60px] lg:flex-row items-center justify-between gap-12 relative z-10">
-        <div
-          className="max-w-2xl space-y-8 text-center lg:text-left"
+          variants={floatSlowVariants}
+          animate="float"
+        ></motion.div>
+        <motion.div
+          className="absolute inset-0 opacity-[0.02]"
+          variants={itemVariants}
         >
-          <div className="space-y-2">
-            <h1
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[length:40px_40px]"></div>
+        </motion.div>
+      </motion.div>
+
+      <motion.div
+        className="absolute inset-0 opacity-5"
+        variants={itemVariants}
+      >
+        <div className="absolute inset-0 bg-[url('/pattern-dots-dark.svg')] bg-repeat opacity-20"></div>
+      </motion.div>
+
+      <motion.div
+        className="container mx-auto px-4 py-16 flex flex-col mt-[-60px] lg:flex-row items-center justify-between gap-12 relative z-10"
+        variants={itemVariants}
+      >
+        <motion.div
+          className="max-w-2xl space-y-8 text-center lg:text-left"
+          variants={containerVariants}
+        >
+          <motion.div className="space-y-2" variants={itemVariants}>
+            <motion.h1
               className="text-5xl xl:text-7xl font-bold tracking-tight"
+              variants={itemVariants}
             >
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-red-400 to-yellow-400">
                 Hotspot 24/7
@@ -132,92 +245,122 @@ export default function EnhancedHero() {
               <span className="block mt-1 text-gray-100">
                 Your 24/7 Food Delivery in Lekki
               </span>
-            </h1>
-          </div>
+            </motion.h1>
+          </motion.div>
 
-          <p
+          <motion.p
             className="text-sm md:text-lg leading-relaxed text-gray-300"
+            variants={itemVariants}
           >
             Fresh ingredients, expertly cooked with Naija soul, and ready to
             enjoy. Experience restaurant-quality dining at home – straight from
             the heart of Lagos.
-          </p>
+          </motion.p>
 
-          <div
+          <motion.div
             className="relative glass-border-enhanced rounded-2xl p-6 mt-6 shadow-2xl"
+            variants={itemVariants}
           >
-            <div className="absolute -top-3 left-4 px-3 py-1 bg-gradient-to-r from-orange-600 to-red-600 text-gray-100 text-xs font-semibold rounded-full shadow-md">
+            <motion.div
+              className="absolute -top-3 left-4 px-3 py-1 bg-gradient-to-r from-orange-600 to-red-600 text-gray-100 text-xs font-semibold rounded-full shadow-md"
+              variants={itemVariants}
+            >
               TASTE OF NAIJA
+            </motion.div>
+
+            <div className="mt-2 relative">
+              <AnimatePresence mode="wait">
+                {features.map(
+                  (feature, index) =>
+                    activeFeature === index && (
+                      <motion.div
+                        key={index}
+                        variants={featureVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        className="flex items-start gap-4"
+                      >
+                        {feature.icon}
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold text-gray-100">
+                            {feature.title}
+                          </h3>
+                          <p className="text-gray-300">{feature.description}</p>
+                        </div>
+                      </motion.div>
+                    )
+                )}
+              </AnimatePresence>
             </div>
 
-            <div className="mt-2">
-              {features.map((feature, index) => (
-                <div
-                  key={index}
-                  className={`transition-all duration-500 ${
-                    activeFeature === index
-                      ? "opacity-100 scale-100"
-                      : "opacity-0 scale-95 absolute"
-                  } ${activeFeature !== index && "pointer-events-none"}`}
-                >
-                  <div className="flex items-start gap-4">
-                    {feature.icon}
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-100">
-                        {feature.title}
-                      </h3>
-                      <p className="text-gray-300">{feature.description}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex justify-center mt-6">
+            <motion.div
+              className="flex justify-center mt-6"
+              variants={itemVariants}
+            >
               {features.map((_, index) => (
-                <Button
+                <motion.div
                   key={index}
-                  size={"icon"}
-                  className={`w-3 h-3 rounded-full mx-1 transition-colors duration-300 ${
-                    activeFeature === index ? "bg-orange-500" : "bg-gray-600"
-                  }`}
-                  onClick={() => setActiveFeature(index)}
-                  aria-label={`Feature ${index + 1}`}
-                />
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <Button
+                    size={"icon"}
+                    className={`w-3 h-3 rounded-full mx-1 transition-colors duration-300 ${
+                      activeFeature === index ? "bg-orange-500" : "bg-gray-600"
+                    }`}
+                    onClick={() => setActiveFeature(index)}
+                    aria-label={`Feature ${index + 1}`}
+                  />
+                </motion.div>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
-          <div
+          <motion.div
             className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+            variants={itemVariants}
           >
-            <Button
-              asChild
-              size="lg"
-              aria-label="Order Now"
-              className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-gray-100 border-0 px-8 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all"
+            <motion.div
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <Link href={"/sign-in"}>
-                Order Now <ShoppingCart className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              aria-label="View Menu"
-              className="bg-transparent border-gray-600 hover:bg-gray-700/50 text-gray-100 px-8 rounded-xl shadow-md"
+              <Button
+                asChild
+                size="lg"
+                aria-label="Order Now"
+                className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-gray-100 border-0 px-8 rounded-xl font-medium shadow-lg hover:shadow-xl transition-all"
+              >
+                <Link href={"/sign-in"}>
+                  Order Now <ShoppingCart className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.05, y: -2 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <Menu className="mr-2 h-5 w-5" /> View Menu
-            </Button>
-          </div>
-        </div>
+              <Button
+                size="lg"
+                variant="outline"
+                aria-label="View Menu"
+                className="bg-transparent border-gray-600 hover:bg-gray-700/50 text-gray-100 px-8 rounded-xl shadow-md"
+              >
+                <Menu className="mr-2 h-5 w-5" /> View Menu
+              </Button>
+            </motion.div>
+          </motion.div>
+        </motion.div>
 
-        <div
+        <motion.div
           className="relative max-w-md xl:max-w-xl z-0"
+          variants={itemVariants}
         >
           <div className="relative">
-            <div
-              className="relative animate-float"
+            <motion.div
+              className="relative"
+              variants={floatVariants}
+              animate="float"
             >
               <Image
                 src="/delicious-nigerian-jollof-rice-with-grilled-chicke.jpg"
@@ -227,10 +370,13 @@ export default function EnhancedHero() {
                 className="w-full h-auto drop-shadow-2xl aspect-square rounded-2xl border border-white/10"
                 priority
               />
-            </div>
+            </motion.div>
 
-            <div
-              className="absolute -top-1 -left-5 glass-border p-4 rounded-xl shadow-2xl animate-float-slow"
+            <motion.div
+              className="absolute -top-1 -left-5 glass-border p-4 rounded-xl shadow-2xl"
+              variants={floatSlowVariants}
+              animate="float"
+              whileHover={{ scale: 1.1, rotate: 5 }}
             >
               <div className="flex items-center gap-3">
                 <div className="bg-orange-600 p-2 rounded-full">
@@ -241,10 +387,13 @@ export default function EnhancedHero() {
                   <p className="text-sm font-medium">Authentic Flavors</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div
-              className="absolute bottom-10 -right-6 glass-border p-4 rounded-xl shadow-2xl animate-float-delay"
+            <motion.div
+              className="absolute bottom-10 -right-6 glass-border p-4 rounded-xl shadow-2xl"
+              variants={floatDelayVariants}
+              animate="float"
+              whileHover={{ scale: 1.1, rotate: -5 }}
             >
               <div className="flex items-center gap-3">
                 <div className="bg-green-600 p-2 rounded-full">
@@ -267,80 +416,26 @@ export default function EnhancedHero() {
                   <p className="text-sm font-medium">Under 30 mins</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div
-              className="absolute top-1/2 right-[-20px] bg-red-600/20 p-3 rounded-full border border-red-500/30 shadow-lg animate-pulse-slow"
+            <motion.div
+              className="absolute top-1/2 right-[-20px] bg-red-600/20 p-3 rounded-full border border-red-500/30 shadow-lg"
+              animate={{
+                scale: [1, 1.1, 1],
+                opacity: [0.6, 1, 0.6],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: easeInOut,
+              }}
+              whileHover={{ scale: 1.2, rotate: 10 }}
             >
               <PepperIcon className="h-6 w-6 text-red-400" />
-            </div>
+            </motion.div>
           </div>
-        </div>
-      </div>
-
-      <style jsx global>{`
-        @keyframes float {
-          0% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-20px);
-          }
-          100% {
-            transform: translateY(0px);
-          }
-        }
-
-        @keyframes float-slow {
-          0% {
-            transform: translateY(0px) rotate(0deg);
-          }
-          50% {
-            transform: translateY(-15px) rotate(2deg);
-          }
-          100% {
-            transform: translateY(0px) rotate(0deg);
-          }
-        }
-
-        @keyframes float-delay {
-          0% {
-            transform: translateY(0px) rotate(0deg);
-          }
-          50% {
-            transform: translateY(-10px) rotate(-2deg);
-          }
-          100% {
-            transform: translateY(0px) rotate(0deg);
-          }
-        }
-
-        @keyframes pulse-slow {
-          0%,
-          100% {
-            opacity: 0.6;
-          }
-          50% {
-            opacity: 1;
-          }
-        }
-
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-
-        .animate-float-slow {
-          animation: float-slow 7s ease-in-out infinite;
-        }
-
-        .animate-float-delay {
-          animation: float-delay 8s ease-in-out 1s infinite;
-        }
-
-        .animate-pulse-slow {
-          animation: pulse-slow 4s ease-in-out infinite;
-        }
-      `}</style>
-    </div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 }

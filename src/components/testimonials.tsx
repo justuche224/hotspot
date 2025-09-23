@@ -66,7 +66,7 @@ export default function Testimonials() {
         ))}
       </div>
     );
-  }
+  };
 
   return (
     <section className="py-24 bg-black relative overflow-hidden">
@@ -74,9 +74,7 @@ export default function Testimonials() {
         <div className="absolute inset-0 bg-[linear-gradient(45deg,rgba(255,255,255,0.02)_25%,transparent_25%,transparent_75%,rgba(255,255,255,0.02)_75%)] bg-[length:60px_60px]"></div>
       </div>
       <div className="container mx-auto px-4">
-        <div
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             What Our{" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-pink-600">
@@ -86,11 +84,9 @@ export default function Testimonials() {
           <p className="text-lg text-gray-300 max-w-2xl mx-auto">
             Real reviews from satisfied customers across Lagos
           </p>
-          </div>
+        </div>
 
-        <div
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto"
-        >
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {testimonials.map((testimonial, index) => (
             <div
               key={index}
@@ -124,9 +120,7 @@ export default function Testimonials() {
         </div>
 
         {/* Trust indicators */}
-        <div
-          className="text-center mt-16"
-        >
+        <div className="text-center mt-16">
           <div className="flex flex-wrap justify-center items-center gap-8 text-gray-400">
             <div className="flex items-center gap-2">
               <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
@@ -141,7 +135,7 @@ export default function Testimonials() {
               <span>Meals Delivered</span>
             </div>
           </div>
-          </div>
+        </div>
       </div>
     </section>
   );

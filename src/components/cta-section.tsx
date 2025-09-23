@@ -39,9 +39,7 @@ export default function CTASection() {
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-orange-900/5 via-transparent to-red-900/5" />
 
       <div className="container mx-auto px-4 relative z-10">
-        <div
-          className="text-center mb-12"
-        >
+        <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Ready to Order?
           </h2>
@@ -50,9 +48,7 @@ export default function CTASection() {
             delivered fresh to your door
           </p>
 
-          <div
-            className="inline-block"
-          >
+          <div className="inline-block">
             <Link
               href="/menu"
               className="inline-flex items-center gap-3 glass-border-enhanced bg-gradient-to-r from-orange-600/20 to-red-600/20 backdrop-blur-md text-white px-8 py-4 rounded-full font-bold text-lg shadow-2xl hover:shadow-orange-500/25 transition-all duration-300 group border-orange-500/30"
@@ -63,9 +59,7 @@ export default function CTASection() {
           </div>
         </div>
 
-        <div
-          className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto"
-        >
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {branches.map((branch, index) => (
             <div
               key={index}
@@ -112,9 +106,7 @@ export default function CTASection() {
           ))}
         </div>
 
-        <div
-          className="text-center mt-16"
-        >
+        <div className="text-center mt-16">
           <div className="flex flex-wrap justify-center items-center gap-8 text-white/90">
             <div className="text-center">
               <div className="text-2xl font-bold">24/7</div>

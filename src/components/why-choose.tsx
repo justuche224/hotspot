@@ -36,9 +36,7 @@ export default function WhyChoose() {
       <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-gradient-to-tr from-red-900/6 to-transparent" />
 
       <div className="container mx-auto px-4 relative z-10">
-        <div
-          className="text-center mb-16"
-        >
+        <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-100 mb-4">
             Why{" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-red-400 to-yellow-400">
@@ -53,11 +51,9 @@ export default function WhyChoose() {
           </p>
         </div>
 
-        <div
-          className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto"
-        >
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {features.map((feature, index) => (
-              <div
+            <div
               key={index}
               className="group relative glass-border rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 hover:border-orange-500/40 hover:-translate-y-3"
             >
@@ -85,15 +81,11 @@ export default function WhyChoose() {
           ))}
         </div>
 
-        <div
-          className="text-center mt-16 relative"
-        >
+        <div className="text-center mt-16 relative">
           <p className="text-gray-300 mb-6 text-lg">
             Ready to taste the Lekki magic?
           </p>
-          <div
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 via-red-600 to-yellow-500 text-gray-100 px-8 py-4 rounded-full font-semibold shadow-xl hover:shadow-2xl transition-all relative overflow-hidden"
-          >
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 via-red-600 to-yellow-500 text-gray-100 px-8 py-4 rounded-full font-semibold shadow-xl hover:shadow-2xl transition-all relative overflow-hidden">
             <Utensils className="h-4 w-4" />
             Order Now – 24/7 Naija Heat
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
