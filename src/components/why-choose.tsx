@@ -1,88 +1,67 @@
 "use client";
-import { motion } from "framer-motion";
-import { Clock, Truck, Leaf } from "lucide-react";
+import { Clock, Truck, Leaf, Utensils } from "lucide-react";
 
 export default function WhyChoose() {
   const features = [
     {
-      icon: <Clock className="h-8 w-8 text-white" />,
-      title: "24/7 Service",
+      icon: <Clock className="h-8 w-8 text-gray-100" />,
+      title: "24/7 Naija Vibes",
       description:
-        "We're always open, ready to serve you anytime, day or night. No more waiting for restaurant hours.",
-      bgColor: "bg-primary",
+        "From dawn prayers to midnight jollof cravings, we're here round the clock – because good food never sleeps in Lagos.",
+      bgColor: "bg-gradient-to-br from-orange-600 to-red-600",
     },
     {
-      icon: <Truck className="h-8 w-8 text-white" />,
-      title: "Fast Delivery",
+      icon: <Truck className="h-8 w-8 text-gray-100" />,
+      title: "Lekki Lightning Delivery",
       description:
-        "Hot, fresh meals delivered to your door in under 30 minutes. Speed you can count on.",
-      bgColor: "bg-green-500",
+        "Your suya or egusi hits your door faster than okada traffic – steaming hot, under 30 mins, no wahala.",
+      bgColor: "bg-gradient-to-br from-green-600 to-emerald-600",
     },
     {
-      icon: <Leaf className="h-8 w-8 text-white" />,
-      title: "Local & Fresh",
+      icon: <Leaf className="h-8 w-8 text-gray-100" />,
+      title: "Fresh from the Market",
       description:
-        "Sourced from local farmers and markets, ensuring the freshest ingredients in every dish.",
-      bgColor: "bg-pink-500",
+        "Straight from Oshodi markets and backyard farms – palm oil popping, spices singing, every bite a taste of home.",
+      bgColor: "bg-gradient-to-br from-yellow-500 to-orange-500",
     },
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.8,
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  };
-
   return (
-    <section className="py-20 bg-white dark:bg-gray-900">
-      <div className="container mx-auto px-4">
-        <motion.div
+    <section className="py-24 bg-black relative overflow-hidden">
+      <div className="absolute inset-0 opacity-[0.02]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_70%,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[length:50px_50px]"></div>
+      </div>
+
+      <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-br from-orange-900/8 to-transparent" />
+      <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-gradient-to-tr from-red-900/6 to-transparent" />
+
+      <div className="container mx-auto px-4 relative z-10">
+        <div
           className="text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            Why Choose{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-pink-600">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-100 mb-4">
+            Why{" "}
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-red-400 to-yellow-400">
               Hotspot 24
             </span>
+            <span className="text-gray-100"> Feels Like Home</span>
           </h2>
-          <p className="text-lg text-gray-600 dark:text-white/70 max-w-2xl mx-auto">
-            Discover what makes us the preferred choice for food delivery in
-            Lekki
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
+            In the heart of Lekki, we&apos;re not just delivering food -
+            we&apos;re bringing the soul of Naija to your plate, one flavorful
+            bite at a time.
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
+        <div
           className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
         >
           {features.map((feature, index) => (
-            <motion.div
+              <div
               key={index}
-              variants={itemVariants}
-              className="group relative liquid-glass rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 hover:-translate-y-2"
+              className="group relative glass-border rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 hover:border-orange-500/40 hover:-translate-y-3"
             >
-              <div className="flex flex-col items-center text-center space-y-6">
+              <div className="flex flex-col items-center text-center space-y-6 relative z-10">
                 <div
                   className={`p-4 rounded-2xl ${feature.bgColor} shadow-lg group-hover:scale-110 transition-transform duration-300`}
                 >
@@ -90,37 +69,36 @@ export default function WhyChoose() {
                 </div>
 
                 <div className="space-y-3">
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <h3 className="text-2xl font-bold text-gray-100">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-600 dark:text-white/70 leading-relaxed">
+                  <p className="text-gray-300 leading-relaxed">
                     {feature.description}
                   </p>
                 </div>
               </div>
 
-              {/* Decorative gradient background */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-pink-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </motion.div>
-          ))}
-        </motion.div>
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-red-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-        {/* Bottom CTA */}
-        <motion.div
-          className="text-center mt-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+              <div className="absolute bg-gradient-to-br from-orange-400/10 to-transparent rounded-2xl -inset-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur" />
+            </div>
+          ))}
+        </div>
+
+        <div
+          className="text-center mt-16 relative"
         >
-          <p className="text-gray-600 dark:text-white/70 mb-6">
-            Ready to experience the difference?
+          <p className="text-gray-300 mb-6 text-lg">
+            Ready to taste the Lekki magic?
           </p>
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-pink-600 text-white px-6 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transition-all">
-            <Clock className="h-4 w-4" />
-            Order Now - Available 24/7
+          <div
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 via-red-600 to-yellow-500 text-gray-100 px-8 py-4 rounded-full font-semibold shadow-xl hover:shadow-2xl transition-all relative overflow-hidden"
+          >
+            <Utensils className="h-4 w-4" />
+            Order Now – 24/7 Naija Heat
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

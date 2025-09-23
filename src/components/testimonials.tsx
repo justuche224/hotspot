@@ -1,5 +1,4 @@
 "use client";
-import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 
 export default function Testimonials() {
@@ -54,26 +53,6 @@ export default function Testimonials() {
     },
   ];
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.8,
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6 },
-    },
-  };
-
   const StarRating = ({ rating }: { rating: number }) => {
     return (
       <div className="flex gap-1">
@@ -87,17 +66,16 @@ export default function Testimonials() {
         ))}
       </div>
     );
-  };
+  }
 
   return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-800">
+    <section className="py-24 bg-black relative overflow-hidden">
+      <div className="absolute inset-0 opacity-[0.015]">
+        <div className="absolute inset-0 bg-[linear-gradient(45deg,rgba(255,255,255,0.02)_25%,transparent_25%,transparent_75%,rgba(255,255,255,0.02)_75%)] bg-[length:60px_60px]"></div>
+      </div>
       <div className="container mx-auto px-4">
-        <motion.div
+        <div
           className="text-center mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             What Our{" "}
@@ -105,60 +83,51 @@ export default function Testimonials() {
               Customers Say
             </span>
           </h2>
-          <p className="text-lg text-gray-600 dark:text-white/70 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
             Real reviews from satisfied customers across Lagos
           </p>
-        </motion.div>
+          </div>
 
-        <motion.div
+        <div
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
         >
           {testimonials.map((testimonial, index) => (
-            <motion.div
+            <div
               key={index}
-              variants={itemVariants}
-              className="group relative bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700"
+              className="group relative glass-border-subtle rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:border-orange-500/30"
             >
-              <Quote className="absolute top-4 right-4 h-8 w-8 text-primary/20" />
+              <Quote className="absolute top-4 right-4 h-8 w-8 text-orange-400/20" />
 
               <div className="space-y-4">
                 <StarRating rating={testimonial.rating} />
 
-                <p className="text-gray-700 dark:text-white/80 leading-relaxed italic">
+                <p className="text-gray-200 leading-relaxed italic">
                   &quot;{testimonial.review}&quot;
                 </p>
 
-                <div className="flex items-center gap-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                <div className="flex items-center gap-4 pt-4 border-t border-white/10">
                   <div className="w-12 h-12 bg-gradient-to-br from-primary to-pink-500 rounded-full flex items-center justify-center text-white font-semibold">
                     {testimonial.name.charAt(0)}
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-white">
+                    <h4 className="font-semibold text-white">
                       {testimonial.name}
                     </h4>
-                    <p className="text-sm text-gray-500 dark:text-white/60">
+                    <p className="text-sm text-gray-400">
                       {testimonial.location}
                     </p>
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
 
         {/* Trust indicators */}
-        <motion.div
+        <div
           className="text-center mt-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
         >
-          <div className="flex flex-wrap justify-center items-center gap-8 text-gray-500 dark:text-white/60">
+          <div className="flex flex-wrap justify-center items-center gap-8 text-gray-400">
             <div className="flex items-center gap-2">
               <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
               <span className="font-semibold">4.9/5 Rating</span>
@@ -172,7 +141,7 @@ export default function Testimonials() {
               <span>Meals Delivered</span>
             </div>
           </div>
-        </motion.div>
+          </div>
       </div>
     </section>
   );

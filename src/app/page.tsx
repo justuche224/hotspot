@@ -10,7 +10,7 @@ const page = () => {
   return (
     <>
       <PublicNav />
-      <main className="relative w-full bg-gradient-to-br from-white to-gray-50 dark:from-black dark:to-gray-900">
+      <main className="relative w-full bg-black">
         <EnhancedHero />
         <div className="container mx-auto">
           <WhyChoose />

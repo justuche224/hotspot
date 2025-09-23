@@ -11,12 +11,12 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import React from "react";
-import { Separator } from "@/components/ui/separator";
+// import { Separator } from "@/components/ui/separator";
 
 const PublicNav = () => {
   return (
-    <header className="fixed top-0 z-[99] w-full bg-background/50 backdrop-blur-md shadow">
-      <nav className="flex items-center justify-between w-full px-5 md:px-20 py-2">
+    <header className="sticky top-0 z-[99] p-4">
+      <nav className="container mx-auto max-w-4xl liquid-glass-header shadow glass-border-enhanced flex items-center justify-between w-full px-5 md:px-20 py-2 rounded-full">
         <div className="flex gap-1">
           <Button
             aria-label="Home"
@@ -71,7 +71,7 @@ const PublicNav = () => {
               <Menu />
             </Button>
           </SheetTrigger>
-          <SheetContent className="md:hidden w-[100%] z-[100]">
+          <SheetContent className="md:hidden w-[100%] z-[100] liquid-glass-enhanced">
             <SheetHeader>
               <div className="flex justify-between">
                 <SheetTitle>
@@ -92,14 +92,13 @@ const PublicNav = () => {
               </div>
             </SheetHeader>
             <SheetDescription className="flex flex-col gap-2 px-10">
-              <Button aria-label="Branches" asChild variant={"link"}>
+              <Button aria-label="Branches" asChild>
                 <Link href={"/#branches"}>Branches</Link>
               </Button>
               <Button
                 aria-label="About Us"
                 className="hidden md:inline-block"
                 asChild
-                variant={"link"}
               >
                 <Link href={"/about"}>About Us</Link>
               </Button>
@@ -109,7 +108,7 @@ const PublicNav = () => {
               <Button aria-label="Order Now" size={"sm"} asChild>
                 <Link href={"/shop"}>Order Now</Link>
               </Button>
-              <Separator />
+              {/* <Separator /> */}
               {/* <div className="flex justify-between">
                 <span>Theme</span>
                 <ModeToggle />
