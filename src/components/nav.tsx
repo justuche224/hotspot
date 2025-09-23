@@ -18,7 +18,10 @@ const PublicNav = () => {
     <header className="sticky top-0 z-[99] p-4">
       <nav className="container mx-auto max-w-4xl liquid-glass-header shadow glass-border-enhanced flex items-center justify-between w-full px-5 md:px-20 py-2 rounded-full">
         <div className="flex gap-1">
-          <Link href={"/"} className="font-bold tracking-tigt flex items-center gap-1">
+          <Link
+            href={"/"}
+            className="font-bold tracking-tigt flex items-center gap-1"
+          >
             <ShoppingCart />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-pink-600">
               Hotspot 24/7
@@ -51,12 +54,11 @@ const PublicNav = () => {
         </div>
         <div className="gap-4 hidden md:flex">
           <Button aria-label="Cart" size={"sm"} variant={"outline"} asChild>
-            <Link href={"/cart"}>Cart</Link>
+            <Link href={"/branches"}>Browse Locations</Link>
           </Button>
           <Button aria-label="Order Now" size={"sm"} asChild>
-            <Link href={"/shop"}>Order Now</Link>
+            <Link href={"/branches"}>Order Now</Link>
           </Button>
-          {/* <ModeToggle /> */}
         </div>
         <Sheet>
           <SheetTrigger asChild className="md:hidden">
@@ -88,18 +90,19 @@ const PublicNav = () => {
               <Button aria-label="Branches" asChild>
                 <Link href={"/branches"}>Branches</Link>
               </Button>
-              <Button
-                aria-label="About Us"
-                className="hidden md:inline-block"
-                asChild
-              >
+              <Button aria-label="About Us" asChild>
                 <Link href={"/about"}>About Us</Link>
               </Button>
-              <Button aria-label="Cart" size={"sm"} variant={"outline"} asChild>
-                <Link href={"/cart"}>Cart</Link>
+              <Button
+                aria-label="Browse Locations"
+                size={"sm"}
+                variant={"outline"}
+                asChild
+              >
+                <Link href={"/branches"}>Browse Locations</Link>
               </Button>
               <Button aria-label="Order Now" size={"sm"} asChild>
-                <Link href={"/shop"}>Order Now</Link>
+                <Link href={"/branches"}>Order Now</Link>
               </Button>
               {/* <Separator /> */}
               {/* <div className="flex justify-between">
