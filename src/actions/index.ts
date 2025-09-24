@@ -12,26 +12,26 @@ import {
 import { uploadFile } from "@/lib/upload";
 import { slugify } from "@/lib/slugify";
 import { serverAuth } from "@/lib/server-auth";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 
 // ADMIN ACTIONS
 
 export const createBranch = async (formData: FormData) => {
   const user = await serverAuth();
 
-  if (!user) return { error: "Unauthorized" };
-  if (user.role !== "admin") return { error: "Unauthorized" };
+  if (!user) throw new Error("Unauthorized");
+  if (user.role !== "admin") throw new Error("Unauthorized");
 
-  const name = formData.get("name");
-  const address = formData.get("address");
-  const phone = formData.get("phone");
-  const email = formData.get("email");
-  const description = formData.get("description");
+  const name = formData.get("name") as string | null;
+  const address = formData.get("address") as string | null;
+  const phone = formData.get("phone") as string | null;
+  const email = formData.get("email") as string | null;
+  const description = formData.get("description") as string | null;
   const banner = formData.get("banner");
-  const whatsapp = formData.get("whatsapp");
+  const whatsapp = formData.get("whatsapp") as string | null;
 
   if (!name || !address || !phone || !email || !description || !whatsapp)
-    return { error: "All fields are required" };
+    throw new Error("All fields are required");
 
   let bannerUrl = null;
 
@@ -50,25 +50,25 @@ export const createBranch = async (formData: FormData) => {
     whatsapp: whatsapp as string,
   });
 
-  return { success: "Branch created successfully" };
+  return "Branch created successfully";
 };
 
 export const updateBranch = async (branchId: string, formData: FormData) => {
   const user = await serverAuth();
 
-  if (!user) return { error: "Unauthorized" };
-  if (user.role !== "admin") return { error: "Unauthorized" };
+  if (!user) throw new Error("Unauthorized");
+  if (user.role !== "admin") throw new Error("Unauthorized");
 
-  const name = formData.get("name");
-  const address = formData.get("address");
-  const phone = formData.get("phone");
-  const email = formData.get("email");
-  const description = formData.get("description");
+  const name = formData.get("name") as string | null;
+  const address = formData.get("address") as string | null;
+  const phone = formData.get("phone") as string | null;
+  const email = formData.get("email") as string | null;
+  const description = formData.get("description") as string | null;
   const banner = formData.get("banner");
-  const whatsapp = formData.get("whatsapp");
+  const whatsapp = formData.get("whatsapp") as string | null;
 
   if (!name || !address || !phone || !email || !description || !whatsapp)
-    return { error: "All fields are required" };
+    throw new Error("All fields are required");
 
   let bannerUrl = null;
 
@@ -92,25 +92,25 @@ export const updateBranch = async (branchId: string, formData: FormData) => {
 
   await db.update(branches).set(updateData).where(eq(branches.id, branchId));
 
-  return { success: "Branch updated successfully" };
+  return "Branch updated successfully";
 };
 
 export const deleteBranch = async (branchId: string) => {
   const user = await serverAuth();
 
-  if (!user) return { error: "Unauthorized" };
-  if (user.role !== "admin") return { error: "Unauthorized" };
+  if (!user) throw new Error("Unauthorized");
+  if (user.role !== "admin") throw new Error("Unauthorized");
 
   await db.delete(branches).where(eq(branches.id, branchId));
 
-  return { success: "Branch deleted successfully" };
+  return "Branch deleted successfully";
 };
 
 export const getBranches = async () => {
   const user = await serverAuth();
 
-  if (!user) return { error: "Unauthorized" };
-  if (user.role !== "admin") return { error: "Unauthorized" };
+  if (!user) throw new Error("Unauthorized");
+  if (user.role !== "admin") throw new Error("Unauthorized");
 
   const result = await db
     .select()
@@ -124,12 +124,12 @@ export const getBranches = async () => {
 export const createCategory = async (branchId: string, formData: FormData) => {
   const user = await serverAuth();
 
-  if (!user) return { error: "Unauthorized" };
-  if (user.role !== "admin") return { error: "Unauthorized" };
+  if (!user) throw new Error("Unauthorized");
+  if (user.role !== "admin") throw new Error("Unauthorized");
 
-  const name = formData.get("name");
+  const name = formData.get("name") as string | null;
 
-  if (!name) return { error: "Category name is required" };
+  if (!name) throw new Error("Category name is required");
 
   await db.insert(categories).values({
     branchId: branchId,
@@ -137,7 +137,7 @@ export const createCategory = async (branchId: string, formData: FormData) => {
     slug: slugify(name as string),
   });
 
-  return { success: "Category created successfully" };
+  return "Category created successfully";
 };
 
 export const updateCategory = async (
@@ -146,12 +146,12 @@ export const updateCategory = async (
 ) => {
   const user = await serverAuth();
 
-  if (!user) return { error: "Unauthorized" };
-  if (user.role !== "admin") return { error: "Unauthorized" };
+  if (!user) throw new Error("Unauthorized");
+  if (user.role !== "admin") throw new Error("Unauthorized");
 
-  const name = formData.get("name");
+  const name = formData.get("name") as string | null;
 
-  if (!name) return { error: "Category name is required" };
+  if (!name) throw new Error("Category name is required");
 
   await db
     .update(categories)
@@ -162,25 +162,25 @@ export const updateCategory = async (
     })
     .where(eq(categories.id, categoryId));
 
-  return { success: "Category updated successfully" };
+  return "Category updated successfully";
 };
 
 export const deleteCategory = async (categoryId: string) => {
   const user = await serverAuth();
 
-  if (!user) return { error: "Unauthorized" };
-  if (user.role !== "admin") return { error: "Unauthorized" };
+  if (!user) throw new Error("Unauthorized");
+  if (user.role !== "admin") throw new Error("Unauthorized");
 
   await db.delete(categories).where(eq(categories.id, categoryId));
 
-  return { success: "Category deleted successfully" };
+  return "Category deleted successfully";
 };
 
 export const getCategories = async (branchId: string) => {
   const user = await serverAuth();
 
-  if (!user) return { error: "Unauthorized" };
-  if (user.role !== "admin") return { error: "Unauthorized" };
+  if (!user) throw new Error("Unauthorized");
+  if (user.role !== "admin") throw new Error("Unauthorized");
 
   const result = await db
     .select()
@@ -188,7 +188,23 @@ export const getCategories = async (branchId: string) => {
     .where(eq(categories.branchId, branchId))
     .orderBy(desc(categories.createdAt));
 
-  return { success: true, data: result };
+  return result;
+};
+
+export const getCategoryById = async (categoryId: string) => {
+  const user = await serverAuth();
+
+  if (!user) throw new Error("Unauthorized");
+  if (user.role !== "admin") throw new Error("Unauthorized");
+
+  const [category] = await db
+    .select()
+    .from(categories)
+    .where(eq(categories.id, categoryId));
+
+  if (!category) throw new Error("Category not found");
+
+  return category;
 };
 
 // FOOD ITEM ADMIN ACTIONS
@@ -199,18 +215,25 @@ export const createFoodItem = async (
 ) => {
   const user = await serverAuth();
 
-  if (!user) return { error: "Unauthorized" };
-  if (user.role !== "admin") return { error: "Unauthorized" };
+  if (!user) throw new Error("Unauthorized");
+  if (user.role !== "admin") throw new Error("Unauthorized");
 
-  const name = formData.get("name");
-  const description = formData.get("description");
+  const name = formData.get("name") as string | null;
+  const description = formData.get("description") as string | null;
   const image = formData.get("image");
-  const price = formData.get("price");
+  const price = formData.get("price") as string | null;
 
-  if (!name || !description || !image || !price)
-    return { error: "All fields are required" };
+  if (!name || !description || !image || !price) {
+    console.log("name", name);
+    console.log("description", description);
+    console.log("image", typeof image);
+    console.log("price", price);
+    console.log("branchId", branchId);
+    console.log("categoryId", categoryId);
+    throw new Error("All fields are required");
+  }
 
-  if (!(image instanceof File)) return { error: "Invalid image file" };
+  if (!(image instanceof File)) throw new Error("Invalid image file");
 
   const imageUrl = await uploadFile(image, "food-item");
 
@@ -224,7 +247,7 @@ export const createFoodItem = async (
     price: parseInt(price as string),
   });
 
-  return { success: "Food item created successfully" };
+  return "Food item created successfully";
 };
 
 export const updateFoodItem = async (
@@ -233,16 +256,16 @@ export const updateFoodItem = async (
 ) => {
   const user = await serverAuth();
 
-  if (!user) return { error: "Unauthorized" };
-  if (user.role !== "admin") return { error: "Unauthorized" };
+  if (!user) throw new Error("Unauthorized");
+  if (user.role !== "admin") throw new Error("Unauthorized");
 
-  const name = formData.get("name");
-  const description = formData.get("description");
+  const name = formData.get("name") as string | null;
+  const description = formData.get("description") as string | null;
   const image = formData.get("image");
-  const price = formData.get("price");
+  const price = formData.get("price") as string | null;
 
   if (!name || !description || !price)
-    return { error: "All fields are required" };
+    throw new Error("All fields are required");
 
   const updateData: Partial<typeof food_items.$inferInsert> = {
     name: name as string,
@@ -261,25 +284,25 @@ export const updateFoodItem = async (
     .set(updateData)
     .where(eq(food_items.id, foodItemId));
 
-  return { success: "Food item updated successfully" };
+  return "Food item updated successfully";
 };
 
 export const deleteFoodItem = async (foodItemId: string) => {
   const user = await serverAuth();
 
-  if (!user) return { error: "Unauthorized" };
-  if (user.role !== "admin") return { error: "Unauthorized" };
+  if (!user) throw new Error("Unauthorized");
+  if (user.role !== "admin") throw new Error("Unauthorized");
 
   await db.delete(food_items).where(eq(food_items.id, foodItemId));
 
-  return { success: "Food item deleted successfully" };
+  return "Food item deleted successfully";
 };
 
 export const getFoodItems = async (branchId: string, categoryId?: string) => {
   const user = await serverAuth();
 
-  if (!user) return { error: "Unauthorized" };
-  if (user.role !== "admin") return { error: "Unauthorized" };
+  if (!user) throw new Error("Unauthorized");
+  if (user.role !== "admin") throw new Error("Unauthorized");
 
   let whereClause;
   if (categoryId) {
@@ -297,15 +320,45 @@ export const getFoodItems = async (branchId: string, categoryId?: string) => {
     .where(whereClause)
     .orderBy(desc(food_items.createdAt));
 
-  return { success: true, data: result };
+  return result;
+};
+
+export const getFoodItemById = async (foodItemId: string) => {
+  const user = await serverAuth();
+
+  if (!user) throw new Error("Unauthorized");
+  if (user.role !== "admin") throw new Error("Unauthorized");
+
+  const [foodItem] = await db
+    .select()
+    .from(food_items)
+    .where(eq(food_items.id, foodItemId));
+
+  if (!foodItem) throw new Error("Food item not found");
+
+  return foodItem;
+};
+
+export const getFoodItemsCount = async (branchId: string) => {
+  const user = await serverAuth();
+
+  if (!user) throw new Error("Unauthorized");
+  if (user.role !== "admin") throw new Error("Unauthorized");
+
+  const result = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(food_items)
+    .where(eq(food_items.branchId, branchId));
+
+  return result[0]?.count || 0;
 };
 
 // ORDER ADMIN ACTIONS
 export const getAllOrders = async (branchId?: string) => {
   const user = await serverAuth();
 
-  if (!user) return { error: "Unauthorized" };
-  if (user.role !== "admin") return { error: "Unauthorized" };
+  if (!user) throw new Error("Unauthorized");
+  if (user.role !== "admin") throw new Error("Unauthorized");
 
   let whereClause;
   if (branchId) {
@@ -318,7 +371,7 @@ export const getAllOrders = async (branchId?: string) => {
     .where(whereClause)
     .orderBy(desc(orders.createdAt));
 
-  return { success: true, data: result };
+  return result;
 };
 
 export const updateOrderStatus = async (
@@ -327,11 +380,11 @@ export const updateOrderStatus = async (
 ) => {
   const user = await serverAuth();
 
-  if (!user) return { error: "Unauthorized" };
-  if (user.role !== "admin") return { error: "Unauthorized" };
+  if (!user) throw new Error("Unauthorized");
+  if (user.role !== "admin") throw new Error("Unauthorized");
 
   if (!order_status.includes(status)) {
-    return { error: "Invalid status" };
+    throw new Error("Invalid status");
   }
 
   await db
@@ -342,25 +395,37 @@ export const updateOrderStatus = async (
     })
     .where(eq(orders.id, orderId));
 
-  return { success: "Order status updated successfully" };
+  return "Order status updated successfully";
 };
 
 export const getOrderDetails = async (orderId: string) => {
   const user = await serverAuth();
 
-  if (!user) return { error: "Unauthorized" };
-  if (user.role !== "admin") return { error: "Unauthorized" };
+  if (!user) throw new Error("Unauthorized");
+  if (user.role !== "admin") throw new Error("Unauthorized");
 
   const [order] = await db.select().from(orders).where(eq(orders.id, orderId));
 
-  if (!order) return { error: "Order not found" };
+  if (!order) throw new Error("Order not found");
 
   const orderItems = await db
-    .select()
+    .select({
+      id: order_items.id,
+      orderId: order_items.orderId,
+      foodItemId: order_items.foodItemId,
+      branchId: order_items.branchId,
+      quantity: order_items.quantity,
+      price: order_items.price,
+      createdAt: order_items.createdAt,
+      updatedAt: order_items.updatedAt,
+      foodItemName: food_items.name,
+      foodItemImage: food_items.image,
+    })
     .from(order_items)
+    .leftJoin(food_items, eq(order_items.foodItemId, food_items.id))
     .where(eq(order_items.orderId, orderId));
 
-  return { success: true, data: { order, orderItems } };
+  return { order, orderItems };
 };
 
 // PUBLIC ACTIONS
@@ -382,7 +447,7 @@ export const getPublicBranches = async () => {
     .from(branches)
     .orderBy(desc(branches.createdAt));
 
-  return { success: true, data: result };
+  return result;
 };
 
 export const getBranchBySlug = async (slug: string) => {
@@ -391,9 +456,9 @@ export const getBranchBySlug = async (slug: string) => {
     .from(branches)
     .where(eq(branches.slug, slug));
 
-  if (!branch) return { error: "Branch not found" };
+  if (!branch) throw new Error("Branch not found");
 
-  return { success: true, data: branch };
+  return branch;
 };
 
 export const getPublicCategories = async (branchId: string) => {
@@ -403,7 +468,7 @@ export const getPublicCategories = async (branchId: string) => {
     .where(eq(categories.branchId, branchId))
     .orderBy(desc(categories.createdAt));
 
-  return { success: true, data: result };
+  return result;
 };
 
 export const getPublicFoodItems = async (
@@ -426,7 +491,7 @@ export const getPublicFoodItems = async (
     .where(whereClause)
     .orderBy(desc(food_items.createdAt));
 
-  return { success: true, data: result };
+  return result;
 };
 
 export const getFoodItemBySlug = async (branchId: string, slug: string) => {
@@ -435,17 +500,17 @@ export const getFoodItemBySlug = async (branchId: string, slug: string) => {
     .from(food_items)
     .where(and(eq(food_items.branchId, branchId), eq(food_items.slug, slug)));
 
-  if (!foodItem) return { error: "Food item not found" };
+  if (!foodItem) throw new Error("Food item not found");
 
-  return { success: true, data: foodItem };
+  return foodItem;
 };
 
 export const createOrder = async (formData: FormData) => {
-  const branchId = formData.get("branchId");
-  const customerName = formData.get("customerName");
-  const customerPhone = formData.get("customerPhone");
-  const customerAddress = formData.get("customerAddress");
-  const items = formData.get("items"); // JSON string of items
+  const branchId = formData.get("branchId") as string | null;
+  const customerName = formData.get("customerName") as string | null;
+  const customerPhone = formData.get("customerPhone") as string | null;
+  const customerAddress = formData.get("customerAddress") as string | null;
+  const items = formData.get("items") as string | null; // JSON string of items
 
   if (
     !branchId ||
@@ -454,7 +519,7 @@ export const createOrder = async (formData: FormData) => {
     !customerAddress ||
     !items
   ) {
-    return { error: "All fields are required" };
+    throw new Error("All fields are required");
   }
 
   try {
@@ -468,7 +533,7 @@ export const createOrder = async (formData: FormData) => {
         .from(food_items)
         .where(eq(food_items.id, item.foodItemId));
 
-      if (!foodItem) return { error: "Invalid food item" };
+      if (!foodItem) throw new Error("Invalid food item");
       totalAmount += foodItem.price * item.quantity;
     }
 
@@ -506,29 +571,29 @@ export const createOrder = async (formData: FormData) => {
       data: { orderId: order.id },
     };
   } catch {
-    return { error: "Invalid items data" };
+    throw new Error("Invalid items data");
   }
 };
 
-// export const getOrderStatus = async (orderId: string) => {
-//   const [order] = await db.select().from(orders).where(eq(orders.id, orderId));
+export const getOrderStatus = async (orderId: string) => {
+  const [order] = await db.select().from(orders).where(eq(orders.id, orderId));
 
-//   if (!order) return { error: "Order not found" };
+  if (!order) throw new Error("Order not found");
 
-//   const orderItems = await db
-//     .select()
-//     .from(order_items)
-//     .where(eq(order_items.orderId, orderId));
+  const orderItems = await db
+    .select()
+    .from(order_items)
+    .where(eq(order_items.orderId, orderId));
 
-//   return { success: true, data: { order, orderItems } };
-// };
+  return { order, orderItems };
+};
 
-// export const getOrdersByPhone = async (phone: string) => {
-//   const result = await db
-//     .select()
-//     .from(orders)
-//     .where(eq(orders.customerPhone, phone))
-//     .orderBy(desc(orders.createdAt));
+export const getOrdersByPhone = async (phone: string) => {
+  const result = await db
+    .select()
+    .from(orders)
+    .where(eq(orders.customerPhone, phone))
+    .orderBy(desc(orders.createdAt));
 
-//   return { success: true, data: result };
-// };
+  return result;
+};
