@@ -240,7 +240,7 @@ export default function EnhancedHero() {
               variants={itemVariants}
             >
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-400 via-red-400 to-yellow-400">
-                Hotspot 24/7
+                Hotpot 24
               </span>
               <span className="block mt-1 text-gray-100">
                 Your 24/7 Food Delivery in Lekki
@@ -366,7 +366,7 @@ export default function EnhancedHero() {
                 src="/delicious-nigerian-jollof-rice-with-grilled-chicke.jpg"
                 width={600}
                 height={600}
-                alt="Hotspot 24/7 Nigerian food delivery experience"
+                alt="Hotpot 24 Nigerian food delivery experience"
                 className="w-full h-auto drop-shadow-2xl aspect-square rounded-2xl border border-white/10"
                 priority
               />

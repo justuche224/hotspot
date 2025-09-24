@@ -24,7 +24,7 @@ const PublicNav = () => {
           >
             <ShoppingCart />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-pink-600">
-              Hotspot 24/7
+              Hotpot 24
             </span>
           </Link>
           <Button
@@ -79,7 +79,7 @@ const PublicNav = () => {
                     <Link href={"/"}>
                       <ShoppingCart />
                       <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-pink-600">
-                        Hotspot 24/7
+                        Hotpot 24
                       </span>
                     </Link>
                   </Button>

@@ -66,7 +66,7 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <div className="mb-6">
               <h3 className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
-                Hotspot 24/7
+                Hotpot 24
               </h3>
               <p className="text-gray-400 mt-4 leading-relaxed">
                 Your 24/7 Nigerian food delivery partner in Lekki. Fresh
@@ -202,7 +202,7 @@ export default function Footer() {
         <div className="border-t border-white/10 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-gray-400 text-sm">
-              © 2024 Hotspot 24/7. All rights reserved. Made with ❤️ in Lagos.
+              © 2024 Hotpot 24. All rights reserved. Made with ❤️ in Lagos.
             </div>
 
             <div className="flex items-center gap-6 text-gray-400">
