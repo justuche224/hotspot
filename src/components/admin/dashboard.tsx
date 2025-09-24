@@ -10,8 +10,9 @@ import {
 } from "@/components/ui/card";
 import { getBranches, getAllOrders } from "@/actions";
 import { useQuery } from "@tanstack/react-query";
-import { Package, MapPin, ShoppingCart, TrendingUp, Link } from "lucide-react";
+import { Package, MapPin, ShoppingCart, TrendingUp } from "lucide-react";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 const Dashboard = () => {
   const { data: branches } = useQuery({
@@ -123,7 +124,7 @@ const Dashboard = () => {
               </Link>
               <div className="space-y-2">
                 <h4 className="font-medium text-sm">Manage Content</h4>
-                <div className="space-y-2">
+                <div className="space-y-4">
                   <Link href="/admin/branches">
                     <Button variant="outline" size="sm" className="w-full">
                       All Branches

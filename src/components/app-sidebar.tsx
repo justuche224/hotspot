@@ -4,11 +4,11 @@ import * as React from "react";
 import {
   AudioWaveform,
   BookOpen,
-  Package,
   Command,
   GalleryVerticalEnd,
   Map,
   SquareTerminal,
+  Home,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -70,6 +70,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       },
     ],
     navMain: [
+      {
+        title: "Dashboard",
+        url: "/admin",
+        icon: Home,
+        isActive: true,
+        items: [
+          {
+            title: "Admin",
+            url: "/admin",
+          },
+        ],
+      },
       {
         title: "Branches",
         url: "/admin/branches",

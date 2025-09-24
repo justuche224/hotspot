@@ -19,9 +19,9 @@ interface FoodItemsPageProps {
   params: Promise<{
     slug: string;
   }>;
-  searchParams: {
+  searchParams: Promise<{
     category?: string;
-  };
+  }>;
 }
 
 const FoodItemsPage = async ({ params, searchParams }: FoodItemsPageProps) => {
@@ -32,7 +32,12 @@ const FoodItemsPage = async ({ params, searchParams }: FoodItemsPageProps) => {
 
   const branch = await getBranchBySlug((await params).slug);
   const categories = await getCategories(branch.id);
-  const foodItems = await getFoodItems(branch.id, searchParams.category);
+  const foodItems = await getFoodItems(
+    branch.id,
+    (
+      await searchParams
+    ).category
+  );
 
   const foodItemsWithCategories = await Promise.all(
     foodItems.map(async (item) => {
@@ -44,18 +49,19 @@ const FoodItemsPage = async ({ params, searchParams }: FoodItemsPageProps) => {
     })
   );
 
-  const selectedCategory = categories.find(
-    (cat) => cat.id === searchParams.category
-  );
-
   const slug = await params;
+  const searchParamsData = await searchParams;
+
+  const selectedCategory = categories.find(
+    (cat) => cat.id === searchParamsData.category
+  );
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link href={`/admin/branches/${slug.slug}/categories`}>
-            <Button variant="ghost" size="sm">
+            <Button size="sm">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Categories
             </Button>
@@ -80,7 +86,10 @@ const FoodItemsPage = async ({ params, searchParams }: FoodItemsPageProps) => {
         <div className="flex gap-2 flex-wrap">
           <Link href={`/admin/branches/${slug.slug}/food-items`}>
             <Button
-              variant={!searchParams.category ? "default" : "outline"}
+              className={
+                !searchParamsData.category ? "text-black" : "text-white"
+              }
+              variant={!searchParamsData.category ? "default" : "outline"}
               size="sm"
             >
               All Items
@@ -92,8 +101,15 @@ const FoodItemsPage = async ({ params, searchParams }: FoodItemsPageProps) => {
               href={`/admin/branches/${slug.slug}/food-items?category=${category.id}`}
             >
               <Button
+                className={
+                  searchParamsData.category === category.id
+                    ? "text-black"
+                    : "text-white"
+                }
                 variant={
-                  searchParams.category === category.id ? "default" : "outline"
+                  searchParamsData.category === category.id
+                    ? "default"
+                    : "outline"
                 }
                 size="sm"
               >
