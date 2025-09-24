@@ -16,14 +16,14 @@ import React from "react";
 const PublicNav = () => {
   return (
     <header className="sticky top-0 z-[99] p-4">
-      <nav className="container mx-auto max-w-4xl liquid-glass-header shadow glass-border-enhanced flex items-center justify-between w-full px-5 md:px-20 py-2 rounded-full">
+      <nav className="container mx-auto max-w-4xl liquid-glass-header shadow flex items-center justify-between w-full px-5 md:px-20 py-2 rounded-full">
         <div className="flex gap-1">
           <Link
             href={"/"}
             className="font-bold tracking-tigt flex items-center gap-1"
           >
             <ShoppingCart />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-pink-600">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-pink-600">
               Hotspot 24/7
             </span>
           </Link>
@@ -53,9 +53,9 @@ const PublicNav = () => {
           </Button>
         </div>
         <div className="gap-4 hidden md:flex">
-          <Button aria-label="Cart" size={"sm"} variant={"outline"} asChild>
+          {/* <Button aria-label="Cart" size={"sm"} variant={"outline"} asChild>
             <Link href={"/branches"}>Browse Locations</Link>
-          </Button>
+          </Button> */}
           <Button aria-label="Order Now" size={"sm"} asChild>
             <Link href={"/branches"}>Order Now</Link>
           </Button>
@@ -92,14 +92,6 @@ const PublicNav = () => {
               </Button>
               <Button aria-label="About Us" asChild>
                 <Link href={"/about"}>About Us</Link>
-              </Button>
-              <Button
-                aria-label="Browse Locations"
-                size={"sm"}
-                variant={"outline"}
-                asChild
-              >
-                <Link href={"/branches"}>Browse Locations</Link>
               </Button>
               <Button aria-label="Order Now" size={"sm"} asChild>
                 <Link href={"/branches"}>Order Now</Link>

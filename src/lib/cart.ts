@@ -9,6 +9,7 @@ export interface CartItem {
   image: string;
   productSlug: string;
   branchSlug: string;
+  foodItemId: string;
 }
 
 interface CartState {
@@ -17,6 +18,20 @@ interface CartState {
   removeItem: (id: string) => void;
   updateItemQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
+}
+
+interface LegacyCartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+  productSlug: string;
+  branchSlug: string;
+}
+
+interface LegacyCartState {
+  items: LegacyCartItem[];
 }
 
 export const useCartStore = create<CartState>()(
@@ -53,6 +68,19 @@ export const useCartStore = create<CartState>()(
     {
       name: "cart-storage",
       storage: createJSONStorage(() => localStorage),
+      version: 1,
+      migrate: (persistedState: unknown, version: number) => {
+        if (version === 0) {
+          const legacyState = persistedState as LegacyCartState;
+          const items = legacyState?.items || [];
+          const migratedItems: CartItem[] = items.map((item) => ({
+            ...item,
+            foodItemId: item.productSlug,
+          }));
+          return { ...legacyState, items: migratedItems };
+        }
+        return persistedState as CartState;
+      },
     }
   )
 );

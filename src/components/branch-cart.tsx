@@ -19,6 +19,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { createOrder } from "@/actions";
 import { toast } from "sonner";
+import formatPrice from "@/lib/price-formatter";
 
 interface BranchCartProps {
   branch: Branch;
@@ -49,7 +50,7 @@ function BranchCart({ branch }: BranchCartProps) {
     [branchItems]
   );
 
-  const deliveryFee = branch.deliveryFee;
+  const deliveryFee = branch.deliveryFee ?? 0;
   const total = subtotal + deliveryFee;
 
   const handleQuantityChange = (itemId: string, newQuantity: number) => {
@@ -58,33 +59,6 @@ function BranchCart({ branch }: BranchCartProps) {
     } else {
       updateItemQuantity(itemId, newQuantity);
     }
-  };
-
-  const generateWhatsAppMessage = () => {
-    const orderItems = branchItems
-      .map(
-        (item) =>
-          `- ${item.name} x${item.quantity} = ₦${(
-            (item.price * item.quantity) /
-            100
-          ).toFixed(2)}`
-      )
-      .join("\n");
-
-    const message = `Order from ${branch.name}
-Name: ${checkoutForm.customerName}
-Phone: ${checkoutForm.customerPhone}
-Address: ${checkoutForm.deliveryAddress}
-Items: 
-${orderItems}
-Subtotal = ₦${(subtotal / 100).toFixed(2)}
-Delivery Fee = ₦${(deliveryFee / 100).toFixed(2)}
-Total = ₦${(total / 100).toFixed(2)}
-Delivery Method: Home Delivery
-
-Please confirm this order and provide estimated delivery time. Thank you! 🙏`;
-
-    return message;
   };
 
   const handleWhatsAppCheckout = async () => {
@@ -99,7 +73,7 @@ Please confirm this order and provide estimated delivery time. Thank you! 🙏`;
         "items",
         JSON.stringify(
           branchItems.map((item) => ({
-            foodItemId: item.productSlug,
+            foodItemId: item.foodItemId,
             quantity: item.quantity,
           }))
         )
@@ -115,10 +89,7 @@ Please confirm this order and provide estimated delivery time. Thank you! 🙏`;
         const orderItems = branchItems
           .map(
             (item) =>
-              `- ${item.name} x${item.quantity} = ₦${(
-                (item.price * item.quantity) /
-                100
-              ).toFixed(2)}`
+              `- ${item.name} x${item.quantity} = ${formatPrice(item.price * item.quantity)}`
           )
           .join("\n");
 
@@ -130,19 +101,45 @@ Phone: ${checkoutForm.customerPhone}
 Address: ${checkoutForm.deliveryAddress}
 Items:
 ${orderItems}
-Subtotal = ₦${(subtotal / 100).toFixed(2)}
-Delivery Fee = ₦${(deliveryFee / 100).toFixed(2)}
-Total = ₦${(total / 100).toFixed(2)}
+Subtotal = ${formatPrice(subtotal)}
+Delivery Fee = ${formatPrice(deliveryFee)}
+Total = ${formatPrice(total)}
 Delivery Method: Home Delivery
 
 Please confirm this order and provide estimated delivery time. Thank you! 🙏`;
 
-        const whatsappUrl = `https://wa.me/${(
-          branch.whatsappNumber || branch.whatsapp
-        ).replace("+", "")}?text=${encodeURIComponent(message)}`;
-        window.open(whatsappUrl, "_blank");
+        const whatsappNumber = branch.whatsappNumber || branch.whatsapp;
+        if (!whatsappNumber) {
+          toast.error("WhatsApp number not configured for this branch");
+          return;
+        }
 
-        toast.success("Order created successfully!");
+        // Clean the WhatsApp number (remove +, spaces, etc.)
+        const cleanNumber = whatsappNumber.replace(/[\+\s\-]/g, "");
+        const whatsappUrl = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(
+          message
+        )}`;
+
+        // Try to open WhatsApp
+        try {
+          const newWindow = window.open(whatsappUrl, "_blank");
+          if (!newWindow) {
+            toast.error(
+              "Popup blocked! Please allow popups for this site and try again."
+            );
+            // Fallback: copy message to clipboard
+            navigator.clipboard.writeText(message).then(() => {
+              toast.success(
+                "Message copied to clipboard. Please paste it in WhatsApp."
+              );
+            });
+          } else {
+            toast.success("Order created successfully! WhatsApp opened.");
+          }
+        } catch (error) {
+          console.error("Failed to open WhatsApp:", error);
+          toast.error("Failed to open WhatsApp. Please try again.");
+        }
       } else {
         toast.error(result.success || "Failed to create order");
       }
@@ -219,7 +216,7 @@ Please confirm this order and provide estimated delivery time. Thank you! 🙏`;
 
       <div className="grid lg:grid-cols-3 gap-8">
         <motion.div className="lg:col-span-2 space-y-6" variants={itemVariants}>
-          <Card className="glass-border bg-gray-800/20 border-gray-700">
+          <Card className="liquid-glass bg-gray-800/20 border-gray-700">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-2">
                 <ShoppingCart className="h-5 w-5" />
@@ -230,7 +227,7 @@ Please confirm this order and provide estimated delivery time. Thank you! 🙏`;
               {branchItems.map((item) => (
                 <motion.div
                   key={item.id}
-                  className="flex items-center gap-4 p-4 glass-border-subtle rounded-xl"
+                  className="flex items-center gap-4 p-4 liquid-glass rounded-xl"
                   variants={itemVariants}
                 >
                   <div className="relative w-16 h-16 rounded-lg overflow-hidden">
@@ -245,7 +242,7 @@ Please confirm this order and provide estimated delivery time. Thank you! 🙏`;
                   <div className="flex-1">
                     <h3 className="font-semibold text-white">{item.name}</h3>
                     <p className="text-orange-400 font-medium">
-                      ₦{(item.price / 100).toFixed(2)} each
+                      {formatPrice(item.price)} each
                     </p>
                   </div>
 
@@ -279,7 +276,7 @@ Please confirm this order and provide estimated delivery time. Thank you! 🙏`;
 
                   <div className="text-right">
                     <p className="text-white font-semibold">
-                      ₦{((item.price * item.quantity) / 100).toFixed(2)}
+                      {formatPrice(item.price * item.quantity)}
                     </p>
                     <Button
                       size="sm"
@@ -297,23 +294,23 @@ Please confirm this order and provide estimated delivery time. Thank you! 🙏`;
         </motion.div>
 
         <motion.div className="space-y-6" variants={itemVariants}>
-          <Card className="glass-border bg-gray-800/20 border-gray-700">
+          <Card className="liquid-glass bg-gray-800/20 border-gray-700">
             <CardHeader>
               <CardTitle className="text-white">Order Summary</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex justify-between text-gray-300">
                 <span>Subtotal</span>
-                <span>₦{(subtotal / 100).toFixed(2)}</span>
+                <span>{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between text-gray-300">
                 <span>Delivery Fee</span>
-                <span>₦{(deliveryFee / 100).toFixed(2)}</span>
+                <span>{formatPrice(deliveryFee)}</span>
               </div>
               <div className="border-t border-gray-700 pt-4">
                 <div className="flex justify-between text-white font-semibold text-lg">
                   <span>Total</span>
-                  <span>₦{(total / 100).toFixed(2)}</span>
+                  <span>{formatPrice(total)}</span>
                 </div>
               </div>
 
@@ -330,7 +327,7 @@ Please confirm this order and provide estimated delivery time. Thank you! 🙏`;
             </CardContent>
           </Card>
 
-          <Card className="glass-border bg-gray-800/20 border-gray-700">
+          <Card className="liquid-glass bg-gray-800/20 border-gray-700">
             <CardHeader>
               <CardTitle className="text-white">Customer Details</CardTitle>
             </CardHeader>

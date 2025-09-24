@@ -2,7 +2,7 @@ import React from "react";
 import { getBranchBySlug } from "@/lib/branches";
 import BranchHero from "@/components/branch-hero";
 import WhatsAppCheckout from "@/components/whatsapp-checkout";
-import DeliveryInfo from "@/components/delivery-info";
+// import DeliveryInfo from "@/components/delivery-info";
 import BranchTestimonials from "@/components/branch-testimonials";
 import BranchMenu from "@/components/branch-menu";
 import { notFound } from "next/navigation";
@@ -27,9 +27,9 @@ const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
             <WhatsAppCheckout branch={branch} />
           </section>
 
-          <section>
+          {/* <section>
             <DeliveryInfo branch={branch} />
-          </section>
+          </section> */}
 
           <section>
             <BranchTestimonials branch={branch} />

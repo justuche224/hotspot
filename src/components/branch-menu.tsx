@@ -1,12 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import FreeBreakfastIcon from "@mui/icons-material/FreeBreakfast";
-import LunchDiningIcon from "@mui/icons-material/LunchDining";
-import SoupKitchenIcon from "@mui/icons-material/SoupKitchen";
-import LocalPizzaIcon from "@mui/icons-material/LocalPizza";
-import CakeIcon from "@mui/icons-material/Cake";
-import LocalBarIcon from "@mui/icons-material/LocalBar";
+import { useQuery } from "@tanstack/react-query";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { ShoppingCart } from "lucide-react";
@@ -18,7 +13,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { getPublicFoodItems, getPublicCategories } from "@/actions";
 import { toast } from "sonner";
-
+import AddToCart from "./add-to-cart";
+import formatPrice from "@/lib/price-formatter";
 interface BranchMenuProps {
   branch: Branch;
 }
@@ -40,113 +36,78 @@ interface Category {
   slug: string;
 }
 
+const fetchCategories = async (branchId: string): Promise<Category[]> => {
+  const categories = await getPublicCategories(branchId);
+  return categories;
+};
+
+const fetchFoodItems = async (branchId: string): Promise<FoodItem[]> => {
+  const foodItemsData = await getPublicFoodItems(branchId);
+  return foodItemsData
+    .filter((item) => item.categoryId !== null && item.branchId !== null)
+    .map((item) => ({
+      id: item.id,
+      name: item.name,
+      image: item.image,
+      price: item.price,
+      description: item.description,
+      slug: item.slug,
+      categoryId: item.categoryId!,
+      branchId: item.branchId!,
+    }));
+};
+
 export default function BranchMenu({ branch }: BranchMenuProps) {
-  const { addItem, items } = useCartStore();
+  const { items } = useCartStore();
   const [searchQuery, setSearchQuery] = useState("");
-  const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const [loading, setLoading] = useState(true);
 
-  // Fetch categories and food items
+  const {
+    data: categories = [],
+    isLoading: categoriesLoading,
+    error: categoriesError,
+  } = useQuery({
+    queryKey: ["categories", branch.id],
+    queryFn: () => fetchCategories(branch.id),
+  });
+
+  const {
+    data: foodItems = [],
+    isLoading: foodItemsLoading,
+    error: foodItemsError,
+  } = useQuery({
+    queryKey: ["foodItems", branch.id],
+    queryFn: () => fetchFoodItems(branch.id),
+  });
+
+  const isLoading = categoriesLoading || foodItemsLoading;
+  const error = categoriesError || foodItemsError;
+
+  // Set first category as selected if available and none is currently selected
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const [categoriesData, foodItemsData] = await Promise.all([
-          getPublicCategories(branch.id),
-          getPublicFoodItems(branch.id),
-        ]);
+    if (categories.length > 0 && selectedCategory === "") {
+      setSelectedCategory(categories[0].id);
+    }
+  }, [categories, selectedCategory]);
 
-        setCategories(categoriesData);
-        // Filter out items with null categoryId or branchId and transform to FoodItem[]
-        const validFoodItems = foodItemsData
-          .filter((item) => item.categoryId !== null && item.branchId !== null)
-          .map((item) => ({
-            id: item.id,
-            name: item.name,
-            image: item.image,
-            price: item.price,
-            description: item.description,
-            slug: item.slug,
-            categoryId: item.categoryId!,
-            branchId: item.branchId!,
-          }));
-        setFoodItems(validFoodItems);
-
-        // Set first category as selected if available
-        if (categoriesData.length > 0) {
-          setSelectedCategory(categoriesData[0].id);
-        }
-      } catch (error) {
-        console.error("Failed to fetch menu data:", error);
-        toast.error("Failed to load menu");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [branch.id]);
+  // Handle errors
+  useEffect(() => {
+    if (error) {
+      console.error("Failed to fetch menu data:", error);
+      toast.error("Failed to load menu");
+    }
+  }, [error]);
 
   const menuItems =
     categories.length > 0
       ? categories.map((category, index) => ({
           id: category.id,
           name: category.name,
-          icon: <FreeBreakfastIcon fontSize="large" />,
-          isActive: index === 0,
+          isActive:
+            selectedCategory === category.id ||
+            (selectedCategory === "" && index === 0),
         }))
-      : [
-          {
-            id: "1",
-            name: "Menu",
-            icon: <FreeBreakfastIcon fontSize="large" />,
-            isActive: true,
-          },
-          {
-            id: "2",
-            name: "Lunch",
-            icon: <LunchDiningIcon fontSize="large" />,
-            isActive: false,
-          },
-          {
-            id: "3",
-            name: "Dinner",
-            icon: <SoupKitchenIcon fontSize="large" />,
-            isActive: false,
-          },
-          {
-            id: "4",
-            name: "Dessert",
-            icon: <CakeIcon fontSize="large" />,
-            isActive: false,
-          },
-          {
-            id: "5",
-            name: "Drinks",
-            icon: <LocalBarIcon fontSize="large" />,
-            isActive: false,
-          },
-          {
-            id: "6",
-            name: "Pizza",
-            icon: <LocalPizzaIcon fontSize="large" />,
-            isActive: false,
-          },
-        ];
-
-  // Transform database food items to component format
-  const transformedFoodItems = foodItems.map((item) => ({
-    id: item.id,
-    name: item.name,
-    image: item.image,
-    price: item.price,
-    description: item.description,
-    slug: item.slug,
-    categoryId: item.categoryId,
-    branchId: item.branchId,
-  }));
+      : [];
 
   const activeCategory = menuItems.find((item) => item.isActive);
   const branchCartItems = items.filter(
@@ -158,7 +119,7 @@ export default function BranchMenu({ branch }: BranchMenuProps) {
   );
 
   // Filter food items based on search query and selected category
-  const filteredFoodItems = transformedFoodItems.filter((item) => {
+  const filteredFoodItems = foodItems.filter((item) => {
     const matchesSearch = item.name
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
@@ -167,20 +128,20 @@ export default function BranchMenu({ branch }: BranchMenuProps) {
     return matchesSearch && matchesCategory;
   });
 
-  const handleAddToCart = (foodItem: FoodItem) => {
-    addItem({
-      id: foodItem.slug,
-      name: foodItem.name,
-      price: foodItem.price,
-      quantity: 1,
-      image: foodItem.image,
-      productSlug: foodItem.slug,
-      branchSlug: branch.slug,
-    });
-    toast.success(`${foodItem.name} added to cart`);
-  };
+  // const handleAddToCart = (foodItem: FoodItem) => {
+  //   addItem({
+  //     id: foodItem.slug,
+  //     name: foodItem.name,
+  //     price: foodItem.price,
+  //     quantity: 1,
+  //     image: foodItem.image,
+  //     productSlug: foodItem.slug,
+  //     branchSlug: branch.slug,
+  //   });
+  //   toast.success(`${foodItem.name} added to cart`);
+  // };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <section
         id="menu"
@@ -235,19 +196,14 @@ export default function BranchMenu({ branch }: BranchMenuProps) {
               key={item.id}
               onClick={() => {
                 setSelectedCategory(String(item.id));
-                // Update active state
-                menuItems.forEach(
-                  (menuItem) => (menuItem.isActive = menuItem.id === item.id)
-                );
               }}
-              className={`p-4 rounded-xl min-w-[6rem] flex flex-col items-center justify-center transition-all duration-300 shadow-md hover:shadow-lg ${
+              className={`px-6 py-3 rounded-xl whitespace-nowrap transition-all duration-300 shadow-md hover:shadow-lg ${
                 item.isActive
                   ? "bg-orange-600 text-white scale-105"
                   : "glass-border-subtle text-gray-100 hover:border-orange-500/40"
               }`}
             >
-              {item.icon}
-              <span className="text-sm font-medium mt-1">{item.name}</span>
+              <span className="text-sm font-medium">{item.name}</span>
             </button>
           ))}
         </div>
@@ -305,16 +261,26 @@ export default function BranchMenu({ branch }: BranchMenuProps) {
                 <p className="text-sm text-gray-400 line-clamp-2">
                   {item.description}
                 </p>
-                <div className="flex justify-between items-center">
-                  <span className="text-xl font-bold text-gray-100">
-                    ₦{(item.price / 100).toFixed(2)}
+                <div className="flex flex-col justify-between items-center gap-2">
+                  <span className="text-xl font-bold text-gray-100 text-left">
+                    {formatPrice(item.price)}
                   </span>
-                  <Button
+                  {/* <Button
                     onClick={() => handleAddToCart(item)}
                     className="bg-orange-600 hover:bg-orange-700 text-white font-medium px-4 py-2 rounded-lg transition-colors"
                   >
                     Add to Cart
-                  </Button>
+                  </Button> */}
+                  <AddToCart
+                    product={{
+                      id: item.id,
+                      branchSlug: branch.slug,
+                      image: item.image,
+                      name: item.name,
+                      price: item.price,
+                      productSlug: item.slug,
+                    }}
+                  />
                 </div>
               </div>
             </motion.div>

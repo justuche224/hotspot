@@ -100,7 +100,7 @@ Please confirm this order and provide estimated delivery time. Thank you! 🙏`;
 I'd like to place a quick order. Can you please send me your latest menu?
 
 📍 Delivery to: ${branch.address} area
-📞 Contact: ${orderForm.customerPhone || "Will provide"}
+📞 Contact: ${orderForm.customerPhone || "Will provide"}  
 
 Thank you!`;
 
@@ -112,7 +112,7 @@ Thank you!`;
 
   return (
     <motion.div
-      className="glass-border-enhanced rounded-2xl p-6 lg:p-8 space-y-6"
+      className="liquid-glass rounded-2xl p-6 lg:p-8 space-y-6"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}

@@ -336,7 +336,7 @@ export default function EnhancedHero() {
                 </Link>
               </Button>
             </motion.div>
-            <motion.div
+            {/* <motion.div
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -348,7 +348,7 @@ export default function EnhancedHero() {
               >
                 <Menu className="mr-2 h-5 w-5" /> View Menu
               </Button>
-            </motion.div>
+            </motion.div> */}
           </motion.div>
         </motion.div>
 

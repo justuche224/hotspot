@@ -96,13 +96,13 @@ const BranchesPage = async () => {
                             {branch.deliveryRadius || "5km radius"}
                           </span>
                           <span className="text-orange-400 font-medium">
-                            ₦{((branch.deliveryFee || 1500) / 100).toFixed(2)}{" "}
+                            ₦{((branch.deliveryFee || 150000) / 100).toFixed(2)}{" "}
                             delivery
                           </span>
                         </div>
                       </div>
 
-                      {branch.specialOffers &&
+                      {/* {branch.specialOffers &&
                         branch.specialOffers.length > 0 && (
                           <div className="bg-orange-600/10 border border-orange-600/30 rounded-lg p-3">
                             <h4 className="text-orange-400 font-semibold text-sm mb-1">
@@ -112,7 +112,7 @@ const BranchesPage = async () => {
                               {branch.specialOffers[0].description}
                             </p>
                           </div>
-                        )}
+                        )} */}
 
                       <div className="space-y-2">
                         <h4 className="text-white font-medium text-sm">
