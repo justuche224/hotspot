@@ -9,7 +9,7 @@ interface PageProps {
 
 const CartPage = async ({ params }: PageProps) => {
   const { slug } = await params;
-  const branch = getBranchBySlug(slug);
+  const branch = await getBranchBySlug(slug);
 
   if (!branch) {
     notFound();

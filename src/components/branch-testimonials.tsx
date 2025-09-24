@@ -50,10 +50,10 @@ export default function BranchTestimonials({
   };
 
   const averageRating =
-    branch.testimonials.reduce(
+    (branch.testimonials || []).reduce(
       (sum, testimonial) => sum + testimonial.rating,
       0
-    ) / branch.testimonials.length;
+    ) / (branch.testimonials?.length || 1);
 
   return (
     <motion.div
@@ -75,7 +75,7 @@ export default function BranchTestimonials({
           </div>
           <div className="h-6 w-px bg-gray-600" />
           <p className="text-gray-300">
-            Based on {branch.testimonials.length} reviews
+            Based on {branch.testimonials?.length || 1} reviews
           </p>
         </div>
         <p className="text-gray-400 max-w-2xl mx-auto">
@@ -88,7 +88,7 @@ export default function BranchTestimonials({
         className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
         variants={containerVariants}
       >
-        {branch.testimonials.map((testimonial) => (
+        {(branch.testimonials || []).map((testimonial) => (
           <motion.div key={testimonial.id} variants={itemVariants}>
             <Card className="glass-border h-full bg-gray-800/20 border-gray-700 hover:border-orange-500/30 transition-all duration-300">
               <CardContent className="p-6 space-y-4">

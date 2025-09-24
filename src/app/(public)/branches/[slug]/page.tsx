@@ -9,7 +9,7 @@ import { notFound } from "next/navigation";
 
 const page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params;
-  const branch = getBranchBySlug(slug);
+  const branch = await getBranchBySlug(slug);
 
   if (!branch) {
     notFound();

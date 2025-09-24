@@ -35,10 +35,9 @@ export default function BranchHero({ branch }: BranchHeroProps) {
 
   const handleWhatsAppOrder = () => {
     const message = `Hello! I'd like to place an order from ${branch.name}. Can you help me with the menu?`;
-    const whatsappUrl = `https://wa.me/${branch.whatsappNumber.replace(
-      "+",
-      ""
-    )}?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/${(
+      branch.whatsappNumber || branch.whatsapp
+    ).replace("+", "")}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
   };
 
@@ -94,10 +93,10 @@ export default function BranchHero({ branch }: BranchHeroProps) {
                   <div>
                     <h3 className="font-semibold text-white">Hours</h3>
                     <p className="text-sm text-gray-300">
-                      {branch.operatingHours.open}
+                      {branch.operatingHours?.open || "24/7"}
                     </p>
                     <p className="text-xs text-gray-400">
-                      {branch.operatingHours.days}
+                      {branch.operatingHours?.days || "Monday - Sunday"}
                     </p>
                   </div>
                 </div>
@@ -111,10 +110,11 @@ export default function BranchHero({ branch }: BranchHeroProps) {
                   <div>
                     <h3 className="font-semibold text-white">Delivery</h3>
                     <p className="text-sm text-gray-300">
-                      {branch.deliveryRadius}
+                      {branch.deliveryRadius || "5km radius"}
                     </p>
                     <p className="text-xs text-gray-400">
-                      ₦{(branch.deliveryFee / 100).toFixed(2)} delivery fee
+                      ₦{((branch.deliveryFee || 1500) / 100).toFixed(2)}{" "}
+                      delivery fee
                     </p>
                   </div>
                 </div>
@@ -132,7 +132,7 @@ export default function BranchHero({ branch }: BranchHeroProps) {
                       <span className="text-sm text-gray-300">4.9/5</span>
                     </div>
                     <p className="text-xs text-gray-400">
-                      {branch.testimonials.length} reviews
+                      {branch.testimonials?.length || 1} reviews
                     </p>
                   </div>
                 </div>
@@ -222,7 +222,7 @@ export default function BranchHero({ branch }: BranchHeroProps) {
               <div className="text-center">
                 <p className="text-sm text-gray-300">Quick Contact</p>
                 <p className="text-orange-400 font-semibold">
-                  {branch.whatsappNumber}
+                  {branch.whatsappNumber || branch.whatsapp}
                 </p>
               </div>
             </motion.div>

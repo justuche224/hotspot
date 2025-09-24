@@ -17,6 +17,8 @@ import {
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { createOrder } from "@/actions";
+import { toast } from "sonner";
 
 interface BranchCartProps {
   branch: Branch;
@@ -85,13 +87,69 @@ Please confirm this order and provide estimated delivery time. Thank you! 🙏`;
     return message;
   };
 
-  const handleWhatsAppCheckout = () => {
-    const message = generateWhatsAppMessage();
-    const whatsappUrl = `https://wa.me/${branch.whatsappNumber.replace(
-      "+",
-      ""
-    )}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, "_blank");
+  const handleWhatsAppCheckout = async () => {
+    try {
+      // Create order in database first
+      const formData = new FormData();
+      formData.append("branchId", branch.id);
+      formData.append("customerName", checkoutForm.customerName);
+      formData.append("customerPhone", checkoutForm.customerPhone);
+      formData.append("customerAddress", checkoutForm.deliveryAddress);
+      formData.append(
+        "items",
+        JSON.stringify(
+          branchItems.map((item) => ({
+            foodItemId: item.productSlug,
+            quantity: item.quantity,
+          }))
+        )
+      );
+
+      const result = await createOrder(formData);
+
+      if (result.success) {
+        // Clear cart after successful order creation
+        clearCart();
+
+        // Generate WhatsApp message with order ID
+        const orderItems = branchItems
+          .map(
+            (item) =>
+              `- ${item.name} x${item.quantity} = ₦${(
+                (item.price * item.quantity) /
+                100
+              ).toFixed(2)}`
+          )
+          .join("\n");
+
+        const message = `Order from ${branch.name} - Order ID: ${
+          result.data.orderId
+        }
+Name: ${checkoutForm.customerName}
+Phone: ${checkoutForm.customerPhone}
+Address: ${checkoutForm.deliveryAddress}
+Items:
+${orderItems}
+Subtotal = ₦${(subtotal / 100).toFixed(2)}
+Delivery Fee = ₦${(deliveryFee / 100).toFixed(2)}
+Total = ₦${(total / 100).toFixed(2)}
+Delivery Method: Home Delivery
+
+Please confirm this order and provide estimated delivery time. Thank you! 🙏`;
+
+        const whatsappUrl = `https://wa.me/${(
+          branch.whatsappNumber || branch.whatsapp
+        ).replace("+", "")}?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, "_blank");
+
+        toast.success("Order created successfully!");
+      } else {
+        toast.error(result.success || "Failed to create order");
+      }
+    } catch (error) {
+      console.error("Error creating order:", error);
+      toast.error("Failed to create order. Please try again.");
+    }
   };
 
   const containerVariants = {

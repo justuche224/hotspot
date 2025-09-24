@@ -71,7 +71,7 @@ export default function DeliveryInfo({ branch }: DeliveryInfoProps) {
                     Delivery Coverage
                   </h3>
                   <p className="text-gray-400 text-sm">
-                    {branch.deliveryRadius}
+                    {branch.deliveryRadius || "5km radius"}
                   </p>
                 </div>
               </div>
@@ -137,7 +137,7 @@ export default function DeliveryInfo({ branch }: DeliveryInfoProps) {
                 <div className="flex justify-between items-center p-3 glass-border-subtle rounded-lg">
                   <span className="text-gray-300">Standard Delivery Fee</span>
                   <span className="text-white font-semibold">
-                    ₦{(branch.deliveryFee / 100).toFixed(2)}
+                    ₦{((branch.deliveryFee || 1500) / 100).toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center p-3 glass-border-subtle rounded-lg">

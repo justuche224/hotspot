@@ -47,7 +47,7 @@ export default function WhatsAppCheckout({
         : "I'd like to view your menu and place an order.";
 
     const totalAmount = cartItems.reduce((sum, item) => sum + item.price, 0);
-    const deliveryFee = branch.deliveryFee;
+    const deliveryFee = branch.deliveryFee ?? 1500;
     const grandTotal = totalAmount + deliveryFee;
 
     const message = `🍽️ *NEW ORDER - ${branch.name}*
@@ -79,7 +79,7 @@ ${orderForm.orderNotes}`
 }
 
 📍 *Branch:* ${branch.name}
-📞 *Contact:* ${branch.whatsappNumber}
+📞 *Contact:* ${branch.whatsappNumber || branch.whatsapp}
 
 Please confirm this order and provide estimated delivery time. Thank you! 🙏`;
 
@@ -88,10 +88,9 @@ Please confirm this order and provide estimated delivery time. Thank you! 🙏`;
 
   const handleWhatsAppOrder = () => {
     const message = generateWhatsAppMessage();
-    const whatsappUrl = `https://wa.me/${branch.whatsappNumber.replace(
-      "+",
-      ""
-    )}?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/${(
+      branch.whatsappNumber || branch.whatsapp
+    ).replace("+", "")}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, "_blank");
   };
 
@@ -105,10 +104,9 @@ I'd like to place a quick order. Can you please send me your latest menu?
 
 Thank you!`;
 
-    const whatsappUrl = `https://wa.me/${branch.whatsappNumber.replace(
-      "+",
-      ""
-    )}?text=${encodeURIComponent(quickMessage)}`;
+    const whatsappUrl = `https://wa.me/${(
+      branch.whatsappNumber || branch.whatsapp
+    ).replace("+", "")}?text=${encodeURIComponent(quickMessage)}`;
     window.open(whatsappUrl, "_blank");
   };
 
@@ -221,12 +219,14 @@ Thank you!`;
         <div className="grid sm:grid-cols-3 gap-4 text-sm">
           <div>
             <p className="text-gray-400">Coverage Area</p>
-            <p className="text-white">{branch.deliveryRadius}</p>
+            <p className="text-white">
+              {branch.deliveryRadius || "5km radius"}
+            </p>
           </div>
           <div>
             <p className="text-gray-400">Delivery Fee</p>
             <p className="text-white">
-              ₦{(branch.deliveryFee / 100).toFixed(2)}
+              ₦{((branch.deliveryFee ?? 1500) / 100).toFixed(2)}
             </p>
           </div>
           <div>
@@ -270,10 +270,11 @@ Thank you!`;
 
       <div className="text-center space-y-2">
         <p className="text-gray-400 text-sm">
-          WhatsApp: {branch.whatsappNumber}
+          WhatsApp: {branch.whatsappNumber || branch.whatsapp}
         </p>
         <p className="text-gray-500 text-xs">
-          Available {branch.operatingHours.open} • {branch.operatingHours.days}
+          Available {branch.operatingHours?.open || "24/7"} •{" "}
+          {branch.operatingHours?.days || "Monday - Sunday"}
         </p>
       </div>
     </motion.div>

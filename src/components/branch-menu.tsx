@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import FreeBreakfastIcon from "@mui/icons-material/FreeBreakfast";
 import LunchDiningIcon from "@mui/icons-material/LunchDining";
 import SoupKitchenIcon from "@mui/icons-material/SoupKitchen";
@@ -15,6 +16,8 @@ import { useCartStore } from "@/lib/cart";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { getPublicFoodItems, getPublicCategories } from "@/actions";
+import { toast } from "sonner";
 
 interface BranchMenuProps {
   branch: Branch;
@@ -26,98 +29,124 @@ interface FoodItem {
   image: string;
   price: number;
   description: string;
-  rating: number;
+  slug: string;
+  categoryId: string;
+  branchId: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
 }
 
 export default function BranchMenu({ branch }: BranchMenuProps) {
   const { addItem, items } = useCartStore();
   const [searchQuery, setSearchQuery] = useState("");
+  const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [loading, setLoading] = useState(true);
 
-  const menuItems = [
-    {
-      id: 1,
-      name: "Breakfast",
-      icon: <FreeBreakfastIcon fontSize="large" />,
-      isActive: true,
-    },
-    {
-      id: 2,
-      name: "Lunch",
-      icon: <LunchDiningIcon fontSize="large" />,
-      isActive: false,
-    },
-    {
-      id: 3,
-      name: "Dinner",
-      icon: <SoupKitchenIcon fontSize="large" />,
-      isActive: false,
-    },
-    {
-      id: 4,
-      name: "Dessert",
-      icon: <CakeIcon fontSize="large" />,
-      isActive: false,
-    },
-    {
-      id: 5,
-      name: "Drinks",
-      icon: <LocalBarIcon fontSize="large" />,
-      isActive: false,
-    },
-    {
-      id: 6,
-      name: "Pizza",
-      icon: <LocalPizzaIcon fontSize="large" />,
-      isActive: false,
-    },
-  ];
+  // Fetch categories and food items
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [categoriesData, foodItemsData] = await Promise.all([
+          getPublicCategories(branch.id),
+          getPublicFoodItems(branch.id),
+        ]);
 
-  const foodItems: FoodItem[] = [
-    {
-      id: "grilled-suya-1",
-      name: "Grilled Suya Meat Skewers",
-      image: "/grilled-suya-meat-skewers.jpg",
-      price: 10000,
-      description:
-        "Tender beef skewers marinated in spicy peanut sauce, grilled to perfection.",
-      rating: 4.8,
-    },
-    {
-      id: "jollof-chicken-1",
-      name: "Delicious Nigerian Jollof Rice with Grilled Chicken",
-      image: "/delicious-nigerian-jollof-rice-with-grilled-chicke.jpg",
-      price: 6000,
-      description:
-        "Flavorful tomato-based rice served with juicy grilled chicken.",
-      rating: 4.7,
-    },
-    {
-      id: "jollof-bowl-1",
-      name: "Nigerian Jollof Rice in a Bowl",
-      image: "/nigerian-jollof-rice-in-a-bowl.jpg",
-      price: 4000,
-      description: "Classic party jollof rice, smoky and spicy.",
-      rating: 4.5,
-    },
-    {
-      id: "pepper-soup-1",
-      name: "Nigerian Pepper Soup with Fish",
-      image: "/nigerian-pepper-soup-with-fish.jpg",
-      price: 7800,
-      description:
-        "Spicy traditional pepper soup with fresh fish and aromatic spices.",
-      rating: 4.6,
-    },
-    {
-      id: "pounded-yam-1",
-      name: "Pounded Yam with Egusi Soup",
-      image: "/nigerian-pounded-yam-with-egusi-soup.jpg",
-      price: 8000,
-      description:
-        "Smooth pounded yam served with rich egusi soup loaded with vegetables.",
-      rating: 4.8,
-    },
-  ];
+        setCategories(categoriesData);
+        // Filter out items with null categoryId or branchId and transform to FoodItem[]
+        const validFoodItems = foodItemsData
+          .filter((item) => item.categoryId !== null && item.branchId !== null)
+          .map((item) => ({
+            id: item.id,
+            name: item.name,
+            image: item.image,
+            price: item.price,
+            description: item.description,
+            slug: item.slug,
+            categoryId: item.categoryId!,
+            branchId: item.branchId!,
+          }));
+        setFoodItems(validFoodItems);
+
+        // Set first category as selected if available
+        if (categoriesData.length > 0) {
+          setSelectedCategory(categoriesData[0].id);
+        }
+      } catch (error) {
+        console.error("Failed to fetch menu data:", error);
+        toast.error("Failed to load menu");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [branch.id]);
+
+  const menuItems =
+    categories.length > 0
+      ? categories.map((category, index) => ({
+          id: category.id,
+          name: category.name,
+          icon: <FreeBreakfastIcon fontSize="large" />,
+          isActive: index === 0,
+        }))
+      : [
+          {
+            id: "1",
+            name: "Menu",
+            icon: <FreeBreakfastIcon fontSize="large" />,
+            isActive: true,
+          },
+          {
+            id: "2",
+            name: "Lunch",
+            icon: <LunchDiningIcon fontSize="large" />,
+            isActive: false,
+          },
+          {
+            id: "3",
+            name: "Dinner",
+            icon: <SoupKitchenIcon fontSize="large" />,
+            isActive: false,
+          },
+          {
+            id: "4",
+            name: "Dessert",
+            icon: <CakeIcon fontSize="large" />,
+            isActive: false,
+          },
+          {
+            id: "5",
+            name: "Drinks",
+            icon: <LocalBarIcon fontSize="large" />,
+            isActive: false,
+          },
+          {
+            id: "6",
+            name: "Pizza",
+            icon: <LocalPizzaIcon fontSize="large" />,
+            isActive: false,
+          },
+        ];
+
+  // Transform database food items to component format
+  const transformedFoodItems = foodItems.map((item) => ({
+    id: item.id,
+    name: item.name,
+    image: item.image,
+    price: item.price,
+    description: item.description,
+    slug: item.slug,
+    categoryId: item.categoryId,
+    branchId: item.branchId,
+  }));
 
   const activeCategory = menuItems.find((item) => item.isActive);
   const branchCartItems = items.filter(
@@ -128,21 +157,42 @@ export default function BranchMenu({ branch }: BranchMenuProps) {
     0
   );
 
-  const filteredFoodItems = foodItems.filter((item) =>
-    item.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Filter food items based on search query and selected category
+  const filteredFoodItems = transformedFoodItems.filter((item) => {
+    const matchesSearch = item.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const matchesCategory =
+      !selectedCategory || item.categoryId === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   const handleAddToCart = (foodItem: FoodItem) => {
     addItem({
-      id: `${foodItem.id}-${branch.slug}`,
+      id: foodItem.slug,
       name: foodItem.name,
       price: foodItem.price,
       quantity: 1,
       image: foodItem.image,
-      productSlug: foodItem.id,
+      productSlug: foodItem.slug,
       branchSlug: branch.slug,
     });
+    toast.success(`${foodItem.name} added to cart`);
   };
+
+  if (loading) {
+    return (
+      <section
+        id="menu"
+        className="min-h-screen flex items-center justify-center relative overflow-hidden text-gray-100"
+      >
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading menu...</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -183,6 +233,13 @@ export default function BranchMenu({ branch }: BranchMenuProps) {
           {menuItems.map((item) => (
             <button
               key={item.id}
+              onClick={() => {
+                setSelectedCategory(String(item.id));
+                // Update active state
+                menuItems.forEach(
+                  (menuItem) => (menuItem.isActive = menuItem.id === item.id)
+                );
+              }}
               className={`p-4 rounded-xl min-w-[6rem] flex flex-col items-center justify-center transition-all duration-300 shadow-md hover:shadow-lg ${
                 item.isActive
                   ? "bg-orange-600 text-white scale-105"
@@ -238,7 +295,7 @@ export default function BranchMenu({ branch }: BranchMenuProps) {
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 />
                 <div className="absolute top-2 right-2 glass-border-enhanced px-2 py-1 rounded-full text-sm font-medium text-gray-100 flex items-center">
-                  ⭐ {item.rating}
+                  ⭐ 4.5
                 </div>
               </div>
               <div className="p-4 space-y-2">
